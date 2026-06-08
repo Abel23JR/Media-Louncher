@@ -17,7 +17,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #05021a;
+            background-color: #040212;
             font-family: 'Poppins', sans-serif;
             color: white;
         }
@@ -29,13 +29,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1f0431 0%, #05021a 100%);
+            background: linear-gradient(135deg, #150221 0%, #040212 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
             text-align: center;
             padding: 20px;
         }
@@ -43,7 +43,7 @@
         #intro-screen.hidden {
             opacity: 0;
             pointer-events: none;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         #intro-screen h1 {
@@ -55,13 +55,13 @@
         }
 
         #intro-screen p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #b3b3ff;
             margin-bottom: 30px;
         }
 
         .btn-iniciar {
-            padding: 15px 40px;
+            padding: 14px 35px;
             font-size: 1.1rem;
             font-weight: 600;
             color: white;
@@ -70,73 +70,124 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(140, 30, 255, 0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.2s;
         }
 
-        .btn-iniciar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 77, 166, 0.8);
+        .btn-iniciar:active {
+            transform: scale(0.95);
         }
 
-        /* CONTENEDOR PRINCIPAL DEL UNIVERSO */
+        /* CONTENEDOR DEL UNIVERSO (ANIMACIONES NATIVAS CSS) */
         #universe-container {
             position: relative;
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
+            background: radial-gradient(circle at 50% 50%, #140526 0%, #040212 70%);
         }
 
         #universe-container.visible {
             opacity: 1;
         }
 
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* CONTENEDOR CENTRAL PARA ÓRBITAS (Clave para el rendimiento) */
-        .orbit-center {
+        /* EFECTO DE NEBULA BRILLANTE CENTRAL */
+        .nebula-core {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 0;
-            height: 0;
-            z-index: 10;
-            perspective: 1000px;
+            width: 70vmin;
+            height: 70vmin;
+            background: radial-gradient(circle, rgba(255,77,166,0.25) 0%, rgba(140,30,255,0.1) 50%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulseNebula 6s ease-in-out infinite alternate;
         }
 
-        /* NODOS / ENLACES FLOTANTES */
+        @keyframes pulseNebula {
+            0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+
+        /* CORAZÓN CENTRAL EN SVG CON ALTÍSIMO RENDIMIENTO */
+        .heart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 55px;
+            height: 55px;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .heart-svg {
+            width: 100%;
+            height: 100%;
+            fill: #ff4da6;
+            filter: drop-shadow(0 0 12px #ff4da6) drop-shadow(0 0 25px #8c1eff);
+            animation: heartBeat 1.3s infinite ease-in-out;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            45% { transform: scale(1.08); }
+            60% { transform: scale(1.22); }
+            100% { transform: scale(1); }
+        }
+
+        /* BOTONES FLOTANTES EN ÓRBITA PURA CSS (Cero uso de JS para moverse) */
         .orbit-node {
             position: absolute;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.08);
+            top: 50%;
+            left: 50%;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.07);
             border: 1px solid rgba(255, 77, 166, 0.4);
             border-radius: 50px;
             cursor: pointer;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
             color: #fff;
             text-shadow: 0 0 5px #ff4da6;
-            box-shadow: 0 0 15px rgba(255, 77, 166, 0.2);
-            will-change: transform; /* Avisa al navegador que se va a mover */
+            box-shadow: 0 0 12px rgba(255, 77, 166, 0.15);
             white-space: nowrap;
             user-select: none;
-            transition: background 0.3s, box-shadow 0.3s;
+            z-index: 10;
         }
 
-        .orbit-node:hover {
-            background: rgba(255, 77, 166, 0.4);
-            box-shadow: 0 0 25px rgba(255, 77, 166, 0.8);
+        /* Animaciones individuales con diferentes distancias (vmin) y velocidades */
+        /* Nota: el segundo "rotate" contrarresta el giro para que el texto siempre se lea derecho */
+        .node-1 { animation: orbit-1 18s linear infinite; }
+        .node-2 { animation: orbit-2 23s linear infinite; }
+        .node-3 { animation: orbit-3 28s linear infinite; }
+        .node-4 { animation: orbit-4 33s linear infinite; }
+        .node-5 { animation: orbit-5 38s linear infinite; }
+
+        @keyframes orbit-1 {
+            from { transform: translate(-50%, -50%) rotate(0deg) translateX(14vmin) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg) translateX(14vmin) rotate(-360deg); }
+        }
+        @keyframes orbit-2 {
+            from { transform: translate(-50%, -50%) rotate(72deg) translateX(21vmin) rotate(-72deg); }
+            to { transform: translate(-50%, -50%) rotate(432deg) translateX(21vmin) rotate(-432deg); }
+        }
+        @keyframes orbit-3 {
+            from { transform: translate(-50%, -50%) rotate(144deg) translateX(28vmin) rotate(-144deg); }
+            to { transform: translate(-50%, -50%) rotate(504deg) translateX(28vmin) rotate(-504deg); }
+        }
+        @keyframes orbit-4 {
+            from { transform: translate(-50%, -50%) rotate(216deg) translateX(35vmin) rotate(-216deg); }
+            to { transform: translate(-50%, -50%) rotate(576deg) translateX(35vmin) rotate(-576deg); }
+        }
+        @keyframes orbit-5 {
+            from { transform: translate(-50%, -50%) rotate(288deg) translateX(42vmin) rotate(-288deg); }
+            to { transform: translate(-50%, -50%) rotate(648deg) translateX(42vmin) rotate(-648deg); }
         }
 
         /* VENTANAS MODALES */
@@ -144,21 +195,21 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 90%;
-            max-width: 420px;
-            background: rgba(15, 8, 38, 0.95);
+            transform: translate(-50%, -50%) scale(0.85);
+            width: 88%;
+            max-width: 400px;
+            background: rgba(12, 6, 31, 0.96);
             border: 2px solid #ff4da6;
-            box-shadow: 0 0 40px rgba(255, 77, 166, 0.5);
+            box-shadow: 0 0 35px rgba(255, 77, 166, 0.4);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
             z-index: 200;
             opacity: 0;
             pointer-events: none;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .modal.active {
@@ -169,33 +220,26 @@
 
         .modal h2 {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             color: #ff4da6;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .modal p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #e0e0ff;
-            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #d1d1f7;
+            margin-bottom: 20px;
         }
 
         .btn-cerrar {
-            padding: 8px 25px;
+            padding: 8px 22px;
             background: transparent;
             border: 1px solid #ff4da6;
             color: #ff4da6;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-cerrar:hover {
-            background: #ff4da6;
-            color: white;
-            box-shadow: 0 0 15px #ff4da6;
         }
 
         #overlay {
@@ -204,11 +248,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             z-index: 150;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.25s;
         }
         #overlay.active {
             opacity: 1;
@@ -225,15 +269,20 @@
     </div>
 
     <div id="universe-container">
-        <canvas id="galaxyCanvas"></canvas>
+        <div class="nebula-core"></div>
         
-        <div class="orbit-center" id="orbitContainer">
-            <div class="orbit-node" data-target="modal1">Eres mi Todo 💖</div>
-            <div class="orbit-node" data-target="modal2">Si la vida da mandarinas 🍊</div>
-            <div class="orbit-node" data-target="modal3">Una rosa para ti 🌹</div>
-            <div class="orbit-node" data-target="modal4">Gilbert y Anna ✨</div>
-            <div class="orbit-node" data-target="modal5">Mi Destino 🌌</div>
+        <div class="heart-center">
+            <svg viewBox="0 0 32 29.6" class="heart-svg">
+                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+            </svg>
         </div>
+        
+        <button class="orbit-node node-1" data-target="modal1">Eres mi Todo 💖</button>
+        <button class="orbit-node node-2" data-target="modal2">Si la vida da mandarinas 🍊</button>
+        <button class="orbit-node node-3" data-target="modal3">Una rosa para ti 🌹</button>
+        <button class="orbit-node node-4" data-target="modal4">Gilbert y Anna ✨</button>
+        <button class="orbit-node node-5" data-target="modal5">Mi Destino 🌌</button>
     </div>
 
     <div id="overlay"></div>
@@ -268,98 +317,40 @@
         <button class="btn-cerrar">Cerrar</button>
     </div>
 
-    <script>
-        const canvas = document.getElementById('galaxyCanvas');
-        const ctx = canvas.getContext('2d');
-        let animationFrameId;
-        let running = false;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        // Configuración Eficiente de la Galaxia
-        const stars = [];
-        const numStars = 600; // Reducido para máxima fluidez móvil
-
-        for (let i = 0; i < numStars; i++) {
-            const distance = Math.pow(Math.random(), 2.5) * (Math.min(window.innerWidth, window.innerHeight) * 0.5);
-            const armOffset = (Math.floor(Math.random() * 2) * Math.PI); 
-            const spiralAngle = distance * 0.012 + armOffset;
-
-            stars.push({
-                distance: distance,
-                angle: spiralAngle + (Math.random() * 0.5),
-                speed: 0.0015 + (0.003 * (1 - distance / (Math.min(window.innerWidth, window.innerHeight) * 0.5))),
-                size: Math.random() * 1.5 + 0.3,
-                color: ['#ff4da6', '#8c1eff', '#00f0ff', '#ffffff'][Math.floor(Math.random() * 4)]
-            });
-        }
-
-        // Corazón central latiendo
-        function drawHeart(cx, cy, size, time) {
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.beginPath();
-            
-            const pulse = 1 + Math.sin(time * 2.5) * 0.06;
-            ctx.fillStyle = 'rgba(255, 77, 166, 0.85)';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#ff4da6';
-
-            for (let t = 0; t < Math.PI * 2; t += 0.08) {
-                const x = size * 16 * Math.pow(Math.sin(t), 3) * pulse;
-                const y = -size * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * pulse;
-                if (t === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.fill();
-            ctx.restore();
-        }
-
-        // Lógica de Órbitas optimizada con Translate3D
+    <script {passive: true}>
+        const introScreen = document.getElementById('intro-screen');
+        const universeContainer = document.getElementById('universe-container');
+        const btnIniciar = document.getElementById('btnIniciar');
+        const overlay = document.getElementById('overlay');
+        const modales = document.querySelectorAll('.modal');
         const nodos = document.querySelectorAll('.orbit-node');
-        const nodoData = Array.from(nodos).map((nodo, index) => {
-            // Distribución de radios para pantallas grandes y chicas
-            const baseRadius = Math.min(window.innerWidth, window.innerHeight) * 0.18;
-            return {
-                element: nodo,
-                angle: (index * (Math.PI * 2 / nodos.length)),
-                radius: baseRadius + (index * 22)
-            };
+
+        // Entrar al universo
+        btnIniciar.addEventListener('click', () => {
+            introScreen.classList.add('hidden');
+            universeContainer.classList.add('visible');
         });
 
-        function actualizarPosicionNodos() {
-            nodoData.forEach(nodo => {
-                nodo.angle += 0.0025; // Velocidad de giro
-                const x = Math.cos(nodo.angle) * nodo.radius;
-                const y = Math.sin(nodo.angle) * nodo.radius;
-                // Uso de translate3d + translate de centrado evita saltos de diseño
-                nodo.element.style.transform = translate3d(${x}px, ${y}px, 0) translate(-50%, -50%);
-            });
-        }
+        // Abrir textos al tocar los botones
+        nodos.forEach(nodo => {
+            const abrir = () => {
+                const target = nodo.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+                overlay.classList.add('active');
+            };
+            nodo.addEventListener('click', abrir);
+        });
 
-        // Bucle de renderizado limpio
-        let time = 0;
-        function animate() {
-            if (!running) return;
-            time += 0.01;
-            
-            ctx.fillStyle = 'rgba(5, 2, 26, 0.25)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Cerrar textos
+        const cerrar = () => {
+            modales.forEach(m => m.classList.remove('active'));
+            overlay.classList.remove('active');
+        };
 
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-
-            // Dibujar estrellas
-            for (let i = 0; i < numStars; i++) {
-                const star = stars[i];
-                star.angle += star.speed;
-                const x = cx + Math.cos(star.angle) * star.distance;
-                const y = cy + Math.sin(star.angle) * star.distance;
-
-                ctx.beginPath();
-                ctx.arc(x
+        overlay.addEventListener('click', cerrar);
+        document.querySelectorAll('.btn-cerrar').forEach(btn => {
+            btn.addEventListener('click', cerrar);
+        });
+    </script>
+</body>
+</html>
