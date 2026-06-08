@@ -34,10 +34,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
-            transition: opacity 1s ease;
+            z-index: 100;
+            transition: opacity 0.8s ease, transform 0.8s ease;
             text-align: center;
             padding: 20px;
+        }
+
+        #intro-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
         }
 
         #intro-screen h1 {
@@ -78,7 +84,11 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 1s ease;
+        }
+
+        #universe-container.visible {
+            opacity: 1;
         }
 
         canvas {
@@ -90,16 +100,27 @@
             z-index: 1;
         }
 
-        /* NODOS / ENLACES FLOTANTES (ÓRBITAS) */
+        /* CONTENEDOR CENTRAL PARA ÓRBITAS (Clave para el rendimiento) */
+        .orbit-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        /* NODOS / ENLACES FLOTANTES */
         .orbit-node {
             position: absolute;
-            z-index: 2;
             padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 77, 166, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 77, 166, 0.4);
             border-radius: 50px;
             cursor: pointer;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             font-size: 0.85rem;
             font-weight: 600;
             letter-spacing: 1px;
@@ -107,37 +128,37 @@
             color: #fff;
             text-shadow: 0 0 5px #ff4da6;
             box-shadow: 0 0 15px rgba(255, 77, 166, 0.2);
-            transform: translate(-50%, -50%);
-            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-            user-select: none;
+            will-change: transform; /* Avisa al navegador que se va a mover */
             white-space: nowrap;
+            user-select: none;
+            transition: background 0.3s, box-shadow 0.3s;
         }
 
         .orbit-node:hover {
-            background: rgba(255, 77, 166, 0.3);
+            background: rgba(255, 77, 166, 0.4);
             box-shadow: 0 0 25px rgba(255, 77, 166, 0.8);
-            transform: translate(-50%, -50%) scale(1.1);
         }
 
-        /* VENTANAS MODALES (MENSAJES) */
+        /* VENTANAS MODALES */
         .modal {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
             width: 90%;
-            max-width: 450px;
-            background: rgba(15, 8, 38, 0.9);
+            max-width: 420px;
+            background: rgba(15, 8, 38, 0.95);
             border: 2px solid #ff4da6;
             box-shadow: 0 0 40px rgba(255, 77, 166, 0.5);
             border-radius: 20px;
             padding: 30px;
             text-align: center;
-            z-index: 5;
+            z-index: 200;
             opacity: 0;
             pointer-events: none;
             backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .modal.active {
@@ -177,15 +198,14 @@
             box-shadow: 0 0 15px #ff4da6;
         }
 
-        /* CAPA OSCURA DE FONDO AL ABRIR MODAL */
         #overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 4;
+            background: rgba(0,0,0,0.7);
+            z-index: 150;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s;
@@ -201,17 +221,19 @@
     <div id="intro-screen">
         <h1>Mayda</h1>
         <p>Haz clic para iniciar nuestro viaje al infinito</p>
-        <button class="btn-iniciar" onclick="comenzarUniverso()">INICIAR</button>
+        <button class="btn-iniciar" id="btnIniciar">INICIAR</button>
     </div>
 
     <div id="universe-container">
         <canvas id="galaxyCanvas"></canvas>
         
-        <div class="orbit-node" data-target="modal1">Eres mi Todo 💖</div>
-        <div class="orbit-node" data-target="modal2">Si la vida da mandarinas 🍊</div>
-        <div class="orbit-node" data-target="modal3">Una rosa para ti 🌹</div>
-        <div class="orbit-node" data-target="modal4">Gilbert y Anna ✨</div>
-        <div class="orbit-node" data-target="modal5">Mi Destino 🌌</div>
+        <div class="orbit-center" id="orbitContainer">
+            <div class="orbit-node" data-target="modal1">Eres mi Todo 💖</div>
+            <div class="orbit-node" data-target="modal2">Si la vida da mandarinas 🍊</div>
+            <div class="orbit-node" data-target="modal3">Una rosa para ti 🌹</div>
+            <div class="orbit-node" data-target="modal4">Gilbert y Anna ✨</div>
+            <div class="orbit-node" data-target="modal5">Mi Destino 🌌</div>
+        </div>
     </div>
 
     <div id="overlay"></div>
@@ -219,39 +241,39 @@
     <div id="modal1" class="modal">
         <h2>Mi Todo</h2>
         <p>Mayda, eres las palabras más bonitas que le faltaban a mi alma. Eres el centro de mi pequeño universo y la razón de cada una de mis sonrisas.</p>
-        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+        <button class="btn-cerrar">Cerrar</button>
     </div>
 
     <div id="modal2" class="modal">
         <h2>Dulzura de la Vida</h2>
         <p>Dicen por ahí que si la vida te da limones haces limonada... Pero a mí, la vida me dio mandarinas, porque estar contigo es muchísimo más dulce, especial y único. 🍊</p>
-        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+        <button class="btn-cerrar">Cerrar</button>
     </div>
 
     <div id="modal3" class="modal">
         <h2>Te regalo esta rosa</h2>
         <p>Te regalo esta rosa virtual 🌹 y un universo lleno de flores. Aunque siendo sincero, ninguna flor en este mundo tiene la belleza ni el brillo que tú posees.</p>
-        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+        <button class="btn-cerrar">Cerrar</button>
     </div>
 
     <div id="modal4" class="modal">
         <h2>Nuestra Historia</h2>
         <p>Como Gilbert y Anna, en nuestro propio mundo, construyendo momentos que se quedan guardados en lo más profundo del corazón para siempre. ✨</p>
-        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+        <button class="btn-cerrar">Cerrar</button>
     </div>
 
     <div id="modal5" class="modal">
         <h2>Hasta el Infinito</h2>
         <p>No importa cuántas estrellas existan en esta galaxia, mis ojos siempre van a viajar directo hacia ti. ¡Te quiero inmensamente!</p>
-        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+        <button class="btn-cerrar">Cerrar</button>
     </div>
 
     <script>
         const canvas = document.getElementById('galaxyCanvas');
         const ctx = canvas.getContext('2d');
         let animationFrameId;
+        let running = false;
 
-        // Ajustar tamaño del lienzo
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -259,50 +281,38 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Configuración de Partículas de la Galaxia
+        // Configuración Eficiente de la Galaxia
         const stars = [];
-        const numStars = 1500;
-        const center = { x: 0, y: 0 };
+        const numStars = 600; // Reducido para máxima fluidez móvil
 
-        // Inicializar estrellas formando una espiral (Galaxia)
         for (let i = 0; i < numStars; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.pow(Math.random(), 2) * (Math.min(canvas.width, canvas.height) * 0.45);
-            // Definir brazos de la galaxia
+            const distance = Math.pow(Math.random(), 2.5) * (Math.min(window.innerWidth, window.innerHeight) * 0.5);
             const armOffset = (Math.floor(Math.random() * 2) * Math.PI); 
-            const spiralAngle = distance * 0.015 + armOffset;
+            const spiralAngle = distance * 0.012 + armOffset;
 
             stars.push({
                 distance: distance,
-                angle: spiralAngle + (Math.random() * 0.4),
-                speed: 0.002 + (0.005 * (1 - distance / (Math.min(canvas.width, canvas.height) * 0.45))),
-                size: Math.random() * 1.8 + 0.2,
-                color: pickColor()
+                angle: spiralAngle + (Math.random() * 0.5),
+                speed: 0.0015 + (0.003 * (1 - distance / (Math.min(window.innerWidth, window.innerHeight) * 0.5))),
+                size: Math.random() * 1.5 + 0.3,
+                color: ['#ff4da6', '#8c1eff', '#00f0ff', '#ffffff'][Math.floor(Math.random() * 4)]
             });
         }
 
-        function pickColor() {
-            const colors = ['#ff4da6', '#8c1eff', '#00f0ff', '#ffffff', '#ffb3d9'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        // Función para dibujar el gran corazón de partículas en el centro
-        function drawHeart(centerX, centerY, size, time) {
+        // Corazón central latiendo
+        function drawHeart(cx, cy, size, time) {
             ctx.save();
-            ctx.translate(centerX, centerY);
+            ctx.translate(cx, cy);
             ctx.beginPath();
             
-            // Renderizar un corazón matemático latiendo suavemente
-            const pulse = 1 + Math.sin(time * 3) * 0.05;
-            ctx.fillStyle = 'rgba(255, 77, 166, 0.8)';
-            ctx.shadowBlur = 25;
+            const pulse = 1 + Math.sin(time * 2.5) * 0.06;
+            ctx.fillStyle = 'rgba(255, 77, 166, 0.85)';
+            ctx.shadowBlur = 20;
             ctx.shadowColor = '#ff4da6';
 
-            for (let t = 0; t < Math.PI * 2; t += 0.05) {
-                // Ecuaciones paramétricas del corazón
+            for (let t = 0; t < Math.PI * 2; t += 0.08) {
                 const x = size * 16 * Math.pow(Math.sin(t), 3) * pulse;
                 const y = -size * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * pulse;
-                
                 if (t === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -310,83 +320,46 @@
             ctx.restore();
         }
 
-        // BUCLE DE ANIMACIÓN
+        // Lógica de Órbitas optimizada con Translate3D
+        const nodos = document.querySelectorAll('.orbit-node');
+        const nodoData = Array.from(nodos).map((nodo, index) => {
+            // Distribución de radios para pantallas grandes y chicas
+            const baseRadius = Math.min(window.innerWidth, window.innerHeight) * 0.18;
+            return {
+                element: nodo,
+                angle: (index * (Math.PI * 2 / nodos.length)),
+                radius: baseRadius + (index * 22)
+            };
+        });
+
+        function actualizarPosicionNodos() {
+            nodoData.forEach(nodo => {
+                nodo.angle += 0.0025; // Velocidad de giro
+                const x = Math.cos(nodo.angle) * nodo.radius;
+                const y = Math.sin(nodo.angle) * nodo.radius;
+                // Uso de translate3d + translate de centrado evita saltos de diseño
+                nodo.element.style.transform = translate3d(${x}px, ${y}px, 0) translate(-50%, -50%);
+            });
+        }
+
+        // Bucle de renderizado limpio
         let time = 0;
         function animate() {
+            if (!running) return;
             time += 0.01;
-            ctx.fillStyle = 'rgba(5, 2, 26, 0.2)'; // Efecto estela/rastro
+            
+            ctx.fillStyle = 'rgba(5, 2, 26, 0.25)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
 
-            // Dibujar Estrellas
-            stars.forEach(star => {
-                star.angle += star.speed; // Rotación
+            // Dibujar estrellas
+            for (let i = 0; i < numStars; i++) {
+                const star = stars[i];
+                star.angle += star.speed;
                 const x = cx + Math.cos(star.angle) * star.distance;
                 const y = cy + Math.sin(star.angle) * star.distance;
 
                 ctx.beginPath();
-                ctx.arc(x, y, star.size, 0, Math.PI * 2);
-                ctx.fillStyle = star.color;
-                ctx.fill();
-            });
-
-            // Dibujar el agujero negro/corazón central
-            drawHeart(cx, cy, Math.min(canvas.width, canvas.height) * 0.0035, time);
-
-            // Mover los botones HTML en órbita sutil alrededor de la galaxia
-            actualizarPosicionNodos(cx, cy);
-
-            animationFrameId = requestAnimationFrame(animate);
-        }
-
-        // Lógica de movimiento orbital para los elementos HTML
-        const nodos = document.querySelectorAll('.orbit-node');
-        const nodoData = Array.from(nodos).map((nodo, index) => {
-            return {
-                element: nodo,
-                angle: (index * (Math.PI * 2 / nodos.length)),
-                radius: 140 + (index * 25) // Radios escalonados para que no choquen
-            };
-        });
-
-        function actualizarPosicionNodos(cx, cy) {
-            nodoData.forEach(nodo => {
-                nodo.angle += 0.003; // Velocidad de órbita de los botones
-                const x = cx + Math.cos(nodo.angle) * nodo.radius;
-                const y = cy + Math.sin(nodo.angle) * nodo.radius;
-                nodo.element.style.left = ${x}px;
-                nodo.element.style.top = ${y}px;
-            });
-        }
-
-        // INTERACCIONES
-        function comenzarUniverso() {
-            document.getElementById('intro-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('intro-screen').style.display = 'none';
-                const container = document.getElementById('universe-container');
-                container.style.opacity = '1';
-                animate();
-            }, 1000);
-        }
-
-        // Configurar los clicks en los botones flotantes
-        nodos.forEach(nodo => {
-            nodo.addEventListener('click', () => {
-                const targetModalId = nodo.getAttribute('data-target');
-                document.getElementById(targetModalId).classList.add('active');
-                document.getElementById('overlay').classList.add('active');
-            });
-        });
-
-        function cerrarModales() {
-            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        document.getElementById('overlay').addEventListener('click', cerrarModales);
-    </script>
-</body>
-</html>
+                ctx.arc(x
