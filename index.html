@@ -3,113 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Mayda 🥰</title>
+    <title>Mi Universo para Ti</title>
     <style>
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-            background-color: #03001C; color: #fff;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex; justify-content: center; align-items: center;
         }
 
-        /* CAPA DEL BOTÓN: Arriba de todo para que no se bloquee */
-        #intro-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; text-align: center; background: rgba(3, 0, 28, 0.95);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 1s ease-in-out;
+        /* Pantalla de inicio */
+        #landing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #050510 0%, #1a1a3a 100%);
+            z-index: 100;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease-out;
         }
 
+        #landing h1 {
+            font-size: 3.5rem;
+            color: #72aee6;
+            text-shadow: 0 0 15px rgba(114, 174, 230, 0.6);
+            margin-bottom: 0.5rem;
+        }
+
+        #landing h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: #d1e8ff;
+        }
+
+        .mensaje-inicio {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        #btn-entrar {
+            background: linear-gradient(45deg, #4b6cb7 0%, #182848 100%);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(75, 108, 183, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #btn-entrar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(75, 108, 183, 0.8);
+        }
+
+        /* Contenedor del universo 3D */
         #canvas-container {
-            position: absolute; width: 100%; height: 100%; z-index: 1; pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
-        #intro-title { font-size: 36px; color: #87CEEB; margin-bottom: 10px; font-family: 'Georgia', serif; text-shadow: 0 0 15px rgba(135, 206, 235, 0.8); }
-        #intro-text { font-size: 16px; color: #FFF0F5; margin-bottom: 30px; max-width: 400px; line-height: 1.5; }
-
-        #start-button {
-            background: transparent; color: #FFB3D9; border: 2px solid #FFB3D9;
-            padding: 15px 30px; font-size: 18px; font-weight: bold;
-            border-radius: 30px; cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 179, 217, 0.4); letter-spacing: 2px;
+        /* Fotografías flotantes */
+        .foto-flotante {
+            position: absolute;
+            width: 180px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: opacity 2s ease-in;
+            pointer-events: none;
         }
-        #start-button:hover { background: #FFB3D9; color: #03001C; transform: scale(1.05); }
 
-        .orbe, .key-orbe, .heart-particle { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; }
-        .key-orbe { color: #FFB3D9; font-size: 14px; white-space: nowrap; animation: floatWords 18s infinite linear, pulseWord 4s infinite ease-in-out; }
-        .heart-particle { width: 6px; height: 6px; background-color: #FF1A75; box-shadow: 0 0 18px #FF6699; transition: all 4s ease-in-out; }
-        .heart-sparkle { width: 3px; height: 3px; background-color: #FFFFFF; animation: sparklePulse 1s infinite alternate; position: absolute; opacity: 0; }
+        /* Frases flotantes */
+        .frase-flotante {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            z-index: 5;
+            transition: opacity 2s ease-in;
+            pointer-events: none;
+            text-align: center;
+        }
 
-        #photo-gallery { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
-        .photo-container { position: absolute; opacity: 0; width: 28vmin; height: 28vmin; border: 4px solid #fff; border-radius: 12px; overflow: hidden; transform: rotate(var(--rot)) scale(0.7); transition: opacity 2.5s ease-in-out, transform 3s ease-out; }
-        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-container.visible { opacity: 1; transform: rotate(var(--rot)) scale(1); }
-
-        #messages { position: relative; text-align: center; opacity: 0; transition: opacity 3s ease-in-out; z-index: 10; display: none; background: rgba(3, 0, 28, 0.6); padding: 40px; border-radius: 20px; backdrop-filter: blur(8px); }
-        #greeting { font-size: 44px; color: #FFB3D9; text-shadow: 0 0 25px rgba(255, 179, 217, 1); margin-bottom: 10px; font-style: italic; }
-        #personal-message { font-size: 20px; color: #FFF0F5; margin-top: 15px; max-width: 650px; }
-
-        @keyframes pulseStar { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.9; } }
-        @keyframes pulseWord { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-        @keyframes floatWords { 0% { opacity: 0; transform: translate(var(--start-x), var(--start-y)); } 8% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--end-x), var(--end-y)); } }
-        @keyframes pulseHeart { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.03); opacity: 1; } }
-        @keyframes sparklePulse { 0% { opacity: 0; } 100% { opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; } }
+        /* Ajustes responsivos para celulares */
+        @media (max-width: 768px) {
+            #landing h1 { font-size: 2.5rem; }
+            #landing h2 { font-size: 1.5rem; }
+            .mensaje-inicio { padding: 15px 20px; font-size: 1rem; margin: 0 20px 2rem 20px; }
+            .foto-flotante { width: 120px; }
+            .frase-flotante { font-size: 1rem; }
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-<audio id="musica-fondo">
-    <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
-</audio>
+    <audio id="musica" loop preload="auto">
+        <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
+    </audio>
 
-<div id="canvas-container"></div>
+    <div id="landing">
+        <h1>Buenos días ✨</h1>
+        <h2>Mi Amor</h2>
+        <div class="mensaje-inicio">
+            <p>⭐ La vida es más bonita desde que nuestras risas se encontraron.</p>
+            <p>Este pequeño universo digital está lleno de estrellas que brillan gracias a ti, preparadas especialmente para cuando necesitemos un momento relajado y lleno de magia.</p>
+        </div>
+        <button id="btn-entrar">✦ Entrar al Universo ✦</button>
+    </div>
 
-<div id="photo-gallery">
-    <div class="photo-container" style="top: 8%; left: 8%; --rot: -12deg;"><img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg"></div>
-    <div class="photo-container" style="top: 12%; right: 8%; --rot: 15deg;"><img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg"></div>
-    <div class="photo-container" style="bottom: 10%; left: 12%; --rot: -8deg;"><img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg"></div>
-    <div class="photo-container" style="bottom: 15%; right: 10%; --rot: 10deg;"><img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg"></div>
-</div>
+    <div id="canvas-container"></div>
 
-<div id="intro-screen">
-    <div id="intro-title">Buenas noches, Mi Amor ✨</div>
-    <div id="intro-text">La vida es más bonita desde que nuestras risas se encontraron.</div>
-    <button id="start-button">✨ ENTRAR AL UNIVERSO ✨</button>
-</div>
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="foto-flotante" id="foto1" style="top: 15%; left: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="foto-flotante" id="foto2" style="bottom: 20%; right: 15%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="foto-flotante" id="foto3" style="top: 20%; right: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="foto-flotante" id="foto4" style="bottom: 15%; left: 15%;">
 
-<div id="messages">
-    <div id="greeting">Mi Hermosa Mayda</div>
-    <div id="personal-message">Cada destello en este pequeño universo es un recordatorio de lo mucho que te quiero. Eres la estrella más bonita que existe. 🥰</div>
-</div>
+    <div class="frase-flotante" style="top: 40%; left: 5%;">🧭 Tu Norte seguro</div>
+    <div class="frase-flotante" style="top: 60%; right: 5%;">💍 Mi mayor amuleto</div>
+    <div class="frase-flotante" style="top: 80%; left: 30%;">🐱 Amor, a menos que te cases conmigo voy a ser cariñosa</div>
+    <div class="frase-flotante" style="top: 10%; left: 40%;">🎮 Gatitos de Minecraft</div>
 
-<script>
-    const canvasContainer = document.getElementById('canvas-container');
-    const introScreen = document.getElementById('intro-screen');
-    const startButton = document.getElementById('start-button');
-    const messages = document.getElementById('messages');
-    const musica = document.getElementById('musica-fondo');
-    
-    // Generar estrellas y palabras
-    for (let i = 0; i < 180; i++) {
-        const orbe = document.createElement('div'); orbe.classList.add('orbe');
-        orbe.style.left = Math.random() * 100 + '%'; orbe.style.top = Math.random() * 100 + '%';
-        canvasContainer.appendChild(orbe);
-    }
+    <script>
+        // --- LÓGICA ROBUSTA DE BOTONES ---
+        const btnEntrar = document.getElementById('btn-entrar');
+        const musica = document.getElementById('musica');
+        const landing = document.getElementById('landing');
 
-    startButton.addEventListener('click', () => {
-        musica.play();
-        introScreen.style.opacity = '0';
-        setTimeout(() => { introScreen.style.display = 'none'; messages.style.display = 'block'; }, 1000);
+        // Función robusta para iniciar la sorpresa
+        function iniciarUniverso(evento) {
+            // Evitamos que el celular dispare el evento dos veces (toque + clic fantasma)
+            if (evento) evento.preventDefault(); 
+            
+            // Cambiamos el texto para que sepa que está cargando
+            btnEntrar.innerText = "Cargando magia...";
+            btnEntrar.style.opacity = "0.7";
+            btnEntrar.style.pointerEvents = "none";
+
+            // Forzamos la reproducción de la música
+            let playPromise = musica.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // ¡La música empezó! Quitamos la pantalla de inicio
+                    landing.style.opacity = '0';
+                    setTimeout(() => {
+                        landing.style.display = 'none';
+                    }, 1000);
+
+                    // Mostramos las fotos y las frases una por una
+                    const elementos = document.querySelectorAll('.foto-flotante, .frase-flotante');
+                    elementos.forEach((el, index) => {
+                        setTimeout(() => {
+                            el.style.opacity = '0.8';
+                            animarFlote(el);
+                        }, 1000 + (index * 800));
+                    });
+
+                    // Desactivamos los botones para evitar toques extra
+                    btnEntrar.removeEventListener('click', iniciarUniverso);
+                    btnEntrar.removeEventListener('touchstart', iniciarUniverso);
+                    
+                }).catch(error => {
+                    // Si el celular bloquea el audio, permitimos un intento más
+                    console.log("Audio bloqueado, esperando confirmación", error);
+                    btnEntrar.innerText = "✦ Toca una vez más ✦";
+                    btnEntrar.style.opacity = "1";
+                    btnEntrar.style.pointerEvents = "auto";
+                });
+            }
+        }
+
+        // Escuchamos tanto el clic del mouse (laptop) como el toque de pantalla (celular)
+        btnEntrar.addEventListener('click', iniciarUniverso);
+        btnEntrar.addEventListener('touchstart', iniciarUniverso, { passive: false });
+
+        // Animación suave CSS/JS para que las imágenes floten lentamente
+        function animarFlote(elemento) {
+            let tiempo = Math.random() * 100;
+            setInterval(() => {
+                tiempo += 0.02;
+                const offsetY = Math.sin(tiempo) * 15;
+                elemento.style.transform = translateY(${offsetY}px);
+            }, 30);
+        }
+
+        // --- CONFIGURACIÓN THREE.JS (El corazón y la galaxia) ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         
-        // Iniciar animaciones
-        setTimeout(() => {
-            document.querySelectorAll('.photo-container').forEach((photo, index) => {
-                setTimeout(() => photo.classList.add('visible'), index * 800);
-            });
-            setTimeout(() => messages.style.opacity = '1', 1500);
-        }, 1000);
-    });
-</script>
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Crear las estrellas de fondo
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 3000;
+        const starArray = new Float32Array(starCount * 3);
+
+        for(let i = 0; i < starCount * 3; i++) {
+            starArray[i] = (Math.random() - 0.5) * 400; // Distribución amplia
+        }
+        
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starArray, 3));
+        const starMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.5,
+            transparent: true,
+            opacity: 0.8
+        });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+
+        // Crear el Corazón de Partículas (Ecuación matemática del corazón)
+        const heartGeometry = new THREE.BufferGeometry();
+        const heartParticles = 1500;
+        const heartPositions = new Float32Array(heartParticles * 3);
+
+        for (let i = 0; i < heartParticles; i++) {
+            // Ecuación paramétrica del corazón
+            const t = Math.random() * Math.PI * 2;
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            const z = (Math.random() - 0.5) * 5; // Grosor del corazón
+
+            // Escalar para que se vea bien en pantalla
+            heartPositions[i * 3] = x * 1.5;
+            heartPositions[i * 3 + 1] = y * 1.5;
+            heartPositions[i * 3 + 2] = z;
+        }
+
+        heartGeometry.setAttribute('position', new THREE.BufferAttribute(heartPositions, 3));
+        
+        // Material del corazón brilloso
+        const heartMaterial = new THREE.PointsMaterial({
+            color: 0x99ccff, // Tono azul claro/celeste
+            size: 1.2,
+            transparent: true,
+            opacity: 0.9,
+            blending: THREE.AdditiveBlending // Efecto de luz
+        });
+
+        const heart = new THREE.Points(heartGeometry, heartMaterial);
+        scene.add(heart);
+
+        camera.position.z = 60;
+
+        // Bucle de animación
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotación del universo
+            stars.rotation.y += 0.0005;
+            stars.rotation.x += 0.0002;
+
+            // Rotación suave del corazón
+            heart.rotation.y += 0.005;
+            heart.rotation.x = Math.sin(Date.now() * 0.001) * 0.2; // Ligero balanceo
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Ajustar al cambiar el tamaño de la ventana
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
