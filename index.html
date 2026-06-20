@@ -42,7 +42,7 @@
 
     <div id="landing">
         <h1>Buenos días ✨</h1>
-        <h2>Mi Amor Mayda</h2>
+        <h2>Mi Amor</h2>
         <button id="btn-entrar">✦ Entrar al Universo ✦</button>
     </div>
 
@@ -84,7 +84,7 @@
 
         function animarFlote(el) {
             let t = Math.random() * 100;
-            setInterval(() => { t += 0.02; el.style.transform = translateY(${Math.sin(t) * 15}px); }, 30);
+            setInterval(() => { t += 0.02; el.style.transform = `translateY(${Math.sin(t) * 15}px)`; }, 30);
         }
 
         function iniciarUniverso3D() {
