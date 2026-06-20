@@ -3,354 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Mayda ✨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <title>Para Mayda 🥰</title>
     <style>
-        * {
-            box-sizing: border-box;
+        body, html {
             margin: 0;
             padding: 0;
-        }
-
-        body, html {
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #040212;
-            font-family: 'Poppins', sans-serif;
-            color: white;
-        }
-
-        /* PANTALLA DE INICIO */
-        #intro-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #150221 0%, #040212 100%);
+            background-color: #03001C; 
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            text-align: center;
-            padding: 20px;
         }
 
-        #intro-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
+        #canvas-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* --- PANTALLA DE INICIO Y BOTÓN --- */
+        #intro-screen {
+            position: relative;
+            z-index: 20;
+            text-align: center;
+            background: rgba(3, 0, 28, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 179, 217, 0.2);
+            backdrop-filter: blur(5px);
+            transition: opacity 1s ease-in-out;
+        }
+
+        #intro-title {
+            font-size: 36px;
+            color: #87CEEB;
+            margin-bottom: 10px;
+            font-family: 'Georgia', serif;
+            text-shadow: 0 0 15px rgba(135, 206, 235, 0.8);
+        }
+
+        #intro-text {
+            font-size: 16px;
+            color: #FFF0F5;
+            margin-bottom: 30px;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        #start-button {
+            background: transparent;
+            color: #FFB3D9;
+            border: 2px solid #FFB3D9;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 179, 217, 0.4);
+            letter-spacing: 2px;
+        }
+
+        #start-button:hover {
+            background: #FFB3D9;
+            color: #03001C;
+            box-shadow: 0 0 25px rgba(255, 179, 217, 0.8);
             transform: scale(1.05);
         }
 
-        #intro-screen h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 4rem;
-            color: #ff4da6;
-            text-shadow: 0 0 20px rgba(255, 77, 166, 0.6);
-            margin-bottom: 10px;
-        }
-
-        #intro-screen p {
-            font-size: 1.1rem;
-            color: #b3b3ff;
-            margin-bottom: 30px;
-        }
-
-        .btn-iniciar {
-            padding: 14px 35px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(45deg, #ff4da6, #8c1eff);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(140, 30, 255, 0.5);
-            transition: transform 0.2s;
-        }
-
-        .btn-iniciar:active {
-            transform: scale(0.95);
-        }
-
-        /* CONTENEDOR DEL UNIVERSO (ANIMACIONES NATIVAS CSS) */
-        #universe-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        /* Estrellas y palabras flotantes */
+        .orbe, .key-orbe, .heart-particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
             opacity: 0;
-            transition: opacity 0.8s ease;
-            background: radial-gradient(circle at 50% 50%, #140526 0%, #040212 70%);
         }
 
-        #universe-container.visible {
+        .orbe {
+            width: 4px;
+            height: 4px;
+            animation: pulseStar 3s infinite ease-in-out;
+        }
+
+        .key-orbe {
+            padding: 4px 8px;
+            color: #FFB3D9;
+            font-size: 14px;
+            white-space: nowrap;
+            background: none;
+            box-shadow: none;
             opacity: 1;
-        }
-
-        /* EFECTO DE NEBULA BRILLANTE CENTRAL */
-        .nebula-core {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 70vmin;
-            height: 70vmin;
-            background: radial-gradient(circle, rgba(255,77,166,0.25) 0%, rgba(140,30,255,0.1) 50%, transparent 70%);
             transform: translate(-50%, -50%);
-            pointer-events: none;
-            animation: pulseNebula 6s ease-in-out infinite alternate;
+            animation: floatWords 18s infinite linear, pulseWord 4s infinite ease-in-out;
         }
 
-        @keyframes pulseNebula {
-            0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.7; }
-            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        .heart-particle {
+            width: 6px;
+            height: 6px;
+            background-color: #FF1A75;
+            box-shadow: 0 0 18px #FF6699;
+            transition: all 4s ease-in-out;
         }
 
-        /* CORAZÓN CENTRAL EN SVG CON ALTÍSIMO RENDIMIENTO */
-        .heart-center {
+        .heart-sparkle {
+            width: 3px;
+            height: 3px;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 10px #FF99CC;
+            animation: sparklePulse 1s infinite alternate;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 55px;
-            height: 55px;
-            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+
+        /* --- GALERÍA DE FOTOS --- */
+        #photo-gallery {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: 5;
             pointer-events: none;
         }
 
-        .heart-svg {
-            width: 100%;
-            height: 100%;
-            fill: #ff4da6;
-            filter: drop-shadow(0 0 12px #ff4da6) drop-shadow(0 0 25px #8c1eff);
-            animation: heartBeat 1.3s infinite ease-in-out;
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            30% { transform: scale(1.15); }
-            45% { transform: scale(1.08); }
-            60% { transform: scale(1.22); }
-            100% { transform: scale(1); }
-        }
-
-        /* BOTONES FLOTANTES EN ÓRBITA PURA CSS (Cero uso de JS para moverse) */
-        .orbit-node {
+        .photo-container {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 77, 166, 0.4);
-            border-radius: 50px;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #fff;
-            text-shadow: 0 0 5px #ff4da6;
-            box-shadow: 0 0 12px rgba(255, 77, 166, 0.15);
-            white-space: nowrap;
-            user-select: none;
-            z-index: 10;
-        }
-
-        /* Animaciones individuales con diferentes distancias (vmin) y velocidades */
-        /* Nota: el segundo "rotate" contrarresta el giro para que el texto siempre se lea derecho */
-        .node-1 { animation: orbit-1 18s linear infinite; }
-        .node-2 { animation: orbit-2 23s linear infinite; }
-        .node-3 { animation: orbit-3 28s linear infinite; }
-        .node-4 { animation: orbit-4 33s linear infinite; }
-        .node-5 { animation: orbit-5 38s linear infinite; }
-
-        @keyframes orbit-1 {
-            from { transform: translate(-50%, -50%) rotate(0deg) translateX(14vmin) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg) translateX(14vmin) rotate(-360deg); }
-        }
-        @keyframes orbit-2 {
-            from { transform: translate(-50%, -50%) rotate(72deg) translateX(21vmin) rotate(-72deg); }
-            to { transform: translate(-50%, -50%) rotate(432deg) translateX(21vmin) rotate(-432deg); }
-        }
-        @keyframes orbit-3 {
-            from { transform: translate(-50%, -50%) rotate(144deg) translateX(28vmin) rotate(-144deg); }
-            to { transform: translate(-50%, -50%) rotate(504deg) translateX(28vmin) rotate(-504deg); }
-        }
-        @keyframes orbit-4 {
-            from { transform: translate(-50%, -50%) rotate(216deg) translateX(35vmin) rotate(-216deg); }
-            to { transform: translate(-50%, -50%) rotate(576deg) translateX(35vmin) rotate(-576deg); }
-        }
-        @keyframes orbit-5 {
-            from { transform: translate(-50%, -50%) rotate(288deg) translateX(42vmin) rotate(-288deg); }
-            to { transform: translate(-50%, -50%) rotate(648deg) translateX(42vmin) rotate(-648deg); }
-        }
-
-        /* VENTANAS MODALES */
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.85);
-            width: 88%;
-            max-width: 400px;
-            background: rgba(12, 6, 31, 0.96);
-            border: 2px solid #ff4da6;
-            box-shadow: 0 0 35px rgba(255, 77, 166, 0.4);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            z-index: 200;
             opacity: 0;
-            pointer-events: none;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 28vmin; 
+            height: 28vmin;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(255, 179, 217, 0.6);
+            overflow: hidden;
+            transform: rotate(var(--rot)) scale(0.7);
+            transition: opacity 2.5s ease-in-out, transform 3s ease-out;
         }
 
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .modal h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.3rem;
-            color: #ff4da6;
-            margin-bottom: 12px;
-        }
-
-        .modal p {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #d1d1f7;
-            margin-bottom: 20px;
-        }
-
-        .btn-cerrar {
-            padding: 8px 22px;
-            background: transparent;
-            border: 1px solid #ff4da6;
-            color: #ff4da6;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .photo-container img {
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.75);
-            z-index: 150;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s;
+            object-fit: cover;
+            display: block;
         }
-        #overlay.active {
+
+        .photo-container.visible {
             opacity: 1;
-            pointer-events: auto;
+            transform: rotate(var(--rot)) scale(1);
+        }
+
+        /* --- MENSAJE FINAL --- */
+        #messages {
+            position: relative;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+            z-index: 10;
+            display: none; 
+            background: rgba(3, 0, 28, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 40px rgba(255, 179, 217, 0.3);
+        }
+
+        #greeting {
+            font-size: 44px;
+            font-family: 'Georgia', serif;
+            color: #FFB3D9;
+            text-shadow: 0 0 25px rgba(255, 179, 217, 1);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        #personal-message {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #FFF0F5;
+            margin-top: 15px;
+            max-width: 650px;
+            font-weight: 300;
+        }
+
+        @keyframes pulseStar {
+            0%, 100% { opacity: 0.1; transform: scale(0.9); }
+            50% { opacity: 0.9; transform: scale(1); }
+        }
+        @keyframes pulseWord {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        @keyframes floatWords {
+            0% { opacity: 0; transform: translate(var(--start-x), var(--start-y)); }
+            8% { opacity: 1; }
+            92% { opacity: 1; }
+            100% { opacity: 0; transform: translate(var(--end-x), var(--end-y)); }
+        }
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.03); opacity: 1; }
+        }
+        @keyframes sparklePulse {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div id="intro-screen">
-        <h1>Mayda</h1>
-        <p>Haz clic para iniciar nuestro viaje al infinito</p>
-        <button class="btn-iniciar" id="btnIniciar">INICIAR</button>
-    </div>
+<!-- MÚSICA DESDE CLOUDINARY -->
+<audio id="musica-fondo">
+    <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
+</audio>
 
-    <div id="universe-container">
-        <div class="nebula-core"></div>
+<div id="canvas-container"></div>
+
+<!-- GALERÍA DE FOTOS OCULTA (SE REVELA AL FINAL) -->
+<div id="photo-gallery">
+    <div class="photo-container" style="top: 8%; left: 8%; --rot: -12deg;">
+        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" alt="Mayda 1">
+    </div>
+    <div class="photo-container" style="top: 12%; right: 8%; --rot: 15deg;">
+        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" alt="Mayda 2">
+    </div>
+    <div class="photo-container" style="bottom: 10%; left: 12%; --rot: -8deg;">
+        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" alt="Mayda 3">
+    </div>
+    <div class="photo-container" style="bottom: 15%; right: 10%; --rot: 10deg;">
+        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" alt="Mayda 4">
+    </div>
+</div>
+
+<!-- PANTALLA INICIAL -->
+<div id="intro-screen">
+    <div id="intro-title">Buenos días, Mi Amor ✨</div>
+    <div id="intro-text">
+        La vida es más bonita desde que nuestras risas se encontraron.<br>
+        Este pequeño universo digital está lleno de estrellas que brillan gracias a ti.
+    </div>
+    <button id="start-button">✨ ENTRAR AL UNIVERSO ✨</button>
+</div>
+
+<!-- MENSAJE FINAL -->
+<div id="messages">
+    <div id="greeting">Mi Hermosa Mayda</div>
+    <div id="personal-message">
+        Cada destello en este pequeño universo es un recordatorio de lo mucho que te quiero. Eres la estrella más bonita que existe. Me haces el más feliz del mundo. 🥰
+    </div>
+</div>
+
+<script>
+    const canvasContainer = document.getElementById('canvas-container');
+    const introScreen = document.getElementById('intro-screen');
+    const startButton = document.getElementById('start-button');
+    const messages = document.getElementById('messages');
+    const musica = document.getElementById('musica-fondo');
+    
+    const orbeCount = 180; 
+    const keyOrbeCount = 25; 
+    const keywords = ['Mayda', 'Hermosa', 'Amor', 'Juntos', 'Siempre', 'Tú', 'Sonrisa', 'Mágica', 'Mi Sol', 'Felicidad'];
+
+    // Crear estrellas de fondo
+    for (let i = 0; i < orbeCount; i++) {
+        const orbe = document.createElement('div');
+        orbe.classList.add('orbe');
+        orbe.style.left = Math.random() * 100 + '%';
+        orbe.style.top = Math.random() * 100 + '%';
+        orbe.style.animationDelay = Math.random() * 3 + 's';
+        canvasContainer.appendChild(orbe);
+    }
+
+    // Crear palabras flotantes
+    for (let i = 0; i < keyOrbeCount; i++) {
+        const keyOrbe = document.createElement('div');
+        keyOrbe.classList.add('key-orbe');
+        keyOrbe.innerText = keywords[Math.floor(Math.random() * keywords.length)];
+        const startX = (Math.random() * 140 - 20) + 'vw';
+        const startY = (Math.random() * 140 - 20) + 'vh';
+        const endX = (Math.random() * 140 - 20) + 'vw';
+        const endY = (Math.random() * 140 - 20) + 'vh';
+        keyOrbe.style.setProperty('--start-x', startX);
+        keyOrbe.style.setProperty('--start-y', startY);
+        keyOrbe.style.setProperty('--end-x', endX);
+        keyOrbe.style.setProperty('--end-y', endY);
+        keyOrbe.style.animationDelay = (Math.random() * 12) + 's';
+        canvasContainer.appendChild(keyOrbe);
+    }
+
+    // Preparar partículas del corazón
+    let heartParticles = [];
+    const particleCount = 200; 
+    for (let i = 0; i < particleCount; i++) {
+        const p = document.createElement('div');
+        p.classList.add('heart-particle');
+        canvasContainer.appendChild(p);
+        heartParticles.push(p);
+    }
+
+    function getHeartPoint(t, scaleFactor = 10) {
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+        return { x: x * scaleFactor, y: -y * scaleFactor }; 
+    }
+
+    // --- LA MAGIA COMIENZA AQUÍ ---
+    startButton.addEventListener('click', () => {
         
-        <div class="heart-center">
-            <svg viewBox="0 0 32 29.6" class="heart-svg">
-                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
-                c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
-            </svg>
-        </div>
-        
-        <button class="orbit-node node-1" data-target="modal1">Eres mi Todo 💖</button>
-        <button class="orbit-node node-2" data-target="modal2">Si la vida da mandarinas 🍊</button>
-        <button class="orbit-node node-3" data-target="modal3">Una rosa para ti 🌹</button>
-        <button class="orbit-node node-4" data-target="modal4">Gilbert y Anna ✨</button>
-        <button class="orbit-node node-5" data-target="modal5">Mi Destino 🌌</button>
-    </div>
+        // 1. REPRODUCIR LA MÚSICA
+        musica.play();
 
-    <div id="overlay"></div>
+        // 2. Ocultar pantalla inicial
+        introScreen.style.opacity = '0';
+        setTimeout(() => {
+            introScreen.style.display = 'none';
+            messages.style.display = 'block'; 
+        }, 1000);
 
-    <div id="modal1" class="modal">
-        <h2>Mi Todo</h2>
-        <p>Mayda, eres las palabras más bonitas que le faltaban a mi alma. Eres el centro de mi pequeño universo y la razón de cada una de mis sonrisas.</p>
-        <button class="btn-cerrar">Cerrar</button>
-    </div>
+        // 3. Secuencia de animación
+        setTimeout(() => {
+            // Disolver palabras
+            document.querySelectorAll('.key-orbe').forEach(o => {
+                o.style.animation = 'fadeOut 3s forwards'; 
+            });
 
-    <div id="modal2" class="modal">
-        <h2>Dulzura de la Vida</h2>
-        <p>Dicen por ahí que si la vida te da limones haces limonada... Pero a mí, la vida me dio mandarinas, porque estar contigo es muchísimo más dulce, especial y único. 🍊</p>
-        <button class="btn-cerrar">Cerrar</button>
-    </div>
+            // Formar el corazón
+            heartParticles.forEach((p, index) => {
+                const t = (index / particleCount) * Math.PI * 2;
+                const point = getHeartPoint(t, 11); 
+                p.style.opacity = '1';
+                p.style.left = calc(50% + ${point.x}px);
+                p.style.top = calc(50% + ${point.y}px);
+            });
 
-    <div id="modal3" class="modal">
-        <h2>Te regalo esta rosa</h2>
-        <p>Te regalo esta rosa virtual 🌹 y un universo lleno de flores. Aunque siendo sincero, ninguna flor en este mundo tiene la belleza ni el brillo que tú posees.</p>
-        <button class="btn-cerrar">Cerrar</button>
-    </div>
+            // Añadir destellos al corazón
+            setTimeout(() => {
+                for (let i = 0; i < 30; i++) { 
+                    const sparkle = document.createElement('div');
+                    sparkle.classList.add('heart-sparkle');
+                    canvasContainer.appendChild(sparkle);
+                    const tSparkle = Math.random() * Math.PI * 2;
+                    const pointSparkle = getHeartPoint(tSparkle, 11 * Math.random());
+                    sparkle.style.left = calc(50% + ${pointSparkle.x}px);
+                    sparkle.style.top = calc(50% + ${pointSparkle.y}px);
+                    sparkle.style.animationDelay = (Math.random() * 2) + 's';
+                }
+            }, 3000); 
 
-    <div id="modal4" class="modal">
-        <h2>Nuestra Historia</h2>
-        <p>Como Gilbert y Anna, en nuestro propio mundo, construyendo momentos que se quedan guardados en lo más profundo del corazón para siempre. ✨</p>
-        <button class="btn-cerrar">Cerrar</button>
-    </div>
+            // Hacer latir el corazón
+            setTimeout(() => {
+                heartParticles.forEach(p => {
+                    p.style.animation = 'pulseHeart 2.5s infinite ease-in-out';
+                });
 
-    <div id="modal5" class="modal">
-        <h2>Hasta el Infinito</h2>
-        <p>No importa cuántas estrellas existan en esta galaxia, mis ojos siempre van a viajar directo hacia ti. ¡Te quiero inmensamente!</p>
-        <button class="btn-cerrar">Cerrar</button>
-    </div>
+                // Disolver el corazón y mostrar FOTOS + MENSAJE
+                setTimeout(() => {
+                    // Desaparecer corazón
+                    heartParticles.forEach(p => {
+                        p.style.transition = 'opacity 4s ease-in-out, transform 4s ease-in-out';
+                        p.style.opacity = '0';
+                        p.style.transform = 'scale(0.1)';
+                    });
+                    document.querySelectorAll('.heart-sparkle').forEach(s => {
+                        s.style.animation = 'fadeOut 3s forwards';
+                    });
 
-    <script {passive: true}>
-        const introScreen = document.getElementById('intro-screen');
-        const universeContainer = document.getElementById('universe-container');
-        const btnIniciar = document.getElementById('btnIniciar');
-        const overlay = document.getElementById('overlay');
-        const modales = document.querySelectorAll('.modal');
-        const nodos = document.querySelectorAll('.orbit-node');
+                    // APARECEN LAS FOTOS UNA POR UNA
+                    const photos = document.querySelectorAll('.photo-container');
+                    photos.forEach((photo, index) => {
+                        setTimeout(() => {
+                            photo.classList.add('visible');
+                        }, index * 800); // Retraso de 0.8s entre cada foto
+                    });
 
-        // Entrar al universo
-        btnIniciar.addEventListener('click', () => {
-            introScreen.classList.add('hidden');
-            universeContainer.classList.add('visible');
-        });
+                    // APARECE EL MENSAJE FINAL
+                    setTimeout(() => {
+                        messages.style.opacity = '1';
+                    }, 1500); // El mensaje aparece poco después de las primeras fotos
 
-        // Abrir textos al tocar los botones
-        nodos.forEach(nodo => {
-            const abrir = () => {
-                const target = nodo.getAttribute('data-target');
-                document.getElementById(target).classList.add('active');
-                overlay.classList.add('active');
-            };
-            nodo.addEventListener('click', abrir);
-        });
+                }, 7500); // Tiempo que el corazón se queda en pantalla
 
-        // Cerrar textos
-        const cerrar = () => {
-            modales.forEach(m => m.classList.remove('active'));
-            overlay.classList.remove('active');
-        };
+            }, 4500); // Tiempo hasta que empieza a latir
 
-        overlay.addEventListener('click', cerrar);
-        document.querySelectorAll('.btn-cerrar').forEach(btn => {
-            btn.addEventListener('click', cerrar);
-        });
-    </script>
+        }, 1500); // Tiempo después de presionar el botón
+    });
+
+</script>
 </body>
 </html>
