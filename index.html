@@ -5,46 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Universo para Ti</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: sans-serif; }
-        
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
         #landing {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: linear-gradient(135deg, #050510 0%, #1a1a3a 100%);
-            z-index: 100; color: white; text-align: center;
+            z-index: 100; color: white; text-align: center; transition: opacity 1s ease-out;
         }
 
-        #landing h1 { color: #72aee6; text-shadow: 0 0 15px rgba(114, 174, 230, 0.6); margin-bottom: 0.5rem; }
-        #landing h2 { font-weight: 300; margin-bottom: 2rem; color: #d1e8ff; }
-        
-        .mensaje-inicio {
-            background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1); max-width: 90%; margin-bottom: 3rem;
-        }
+        h1 { font-size: 3.5rem; color: #72aee6; margin-bottom: 0.5rem; }
+        h2 { font-size: 2rem; font-weight: 300; margin-bottom: 2rem; color: #d1e8ff; }
 
         #btn-entrar {
             background: linear-gradient(45deg, #4b6cb7 0%, #182848 100%);
             border: none; padding: 15px 40px; font-size: 1.2rem; color: white;
-            border-radius: 30px; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(75, 108, 183, 0.5); z-index: 101; position: relative;
+            border-radius: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(75, 108, 183, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s; text-transform: uppercase;
         }
+
+        #btn-entrar:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(75, 108, 183, 0.8); }
 
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        .elemento-oculto {
-            position: absolute; opacity: 0; z-index: 10;
-            transition: opacity 2s ease-in; pointer-events: none;
-        }
-
-        .foto { width: 150px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.5); }
-        .frase { color: white; font-size: 1.2rem; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); text-align: center; }
-
-        @media (max-width: 768px) {
-            #landing h1 { font-size: 2rem; }
-            .foto { width: 110px; }
-            .frase { font-size: 1rem; }
-        }
+        .foto-flotante, .frase-flotante { opacity: 0; transition: opacity 2s ease-in; pointer-events: none; }
+        .foto-flotante { position: absolute; width: 180px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.5); z-index: 10; box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+        .frase-flotante { position: absolute; color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 5; text-align: center; max-width: 300px;}
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
@@ -55,85 +43,77 @@
     <div id="landing">
         <h1>Buenos días ✨</h1>
         <h2>Mi Amor</h2>
-        <div class="mensaje-inicio">
-            <p>⭐ La vida es más bonita desde que nuestras risas se encontraron.</p>
-        </div>
-        <button id="btn-entrar" onclick="abrirSorpresa()">✦ Entrar al Universo ✦</button>
+        <button id="btn-entrar">✦ Entrar al Universo ✦</button>
     </div>
 
     <div id="canvas-container"></div>
 
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="elemento-oculto foto" style="top: 15%; left: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="elemento-oculto foto" style="bottom: 20%; right: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="elemento-oculto foto" style="top: 20%; right: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="elemento-oculto foto" style="bottom: 15%; left: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="foto-flotante" style="top: 15%; left: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="foto-flotante" style="bottom: 20%; right: 15%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="foto-flotante" style="top: 20%; right: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="foto-flotante" style="bottom: 15%; left: 15%;">
 
-    <div class="elemento-oculto frase" style="top: 40%; left: 5%;">🧭 Tu Norte seguro</div>
-    <div class="elemento-oculto frase" style="top: 60%; right: 5%;">💍 Mi mayor amuleto</div>
-    <div class="elemento-oculto frase" style="top: 80%; left: 20%;">🐱 Amor, a menos que te cases conmigo voy a ser cariñosa</div>
-    <div class="elemento-oculto frase" style="top: 10%; left: 35%;">🎮 Gatitos de Minecraft</div>
+    <div class="frase-flotante" style="top: 10%; left: 40%;">Te amo no solo por lo que eres, sino por lo que soy cuando estoy contigo.</div>
+    <div class="frase-flotante" style="top: 30%; left: 5%;">Desde que llegaste a mi vida, todo tiene más sentido.</div>
+    <div class="frase-flotante" style="top: 50%; right: 5%;">Te amo con la fuerza de mil estrellas y, aun así, siento que es poco.</div>
+    <div class="frase-flotante" style="top: 70%; left: 10%;">En tus ojos encuentro mi paz; y, en tu sonrisa, mi razón de ser.</div>
+    <div class="frase-flotante" style="top: 90%; left: 40%;">No necesito promesas, solo tu amor sincero cada día.</div>
+    <div class="frase-flotante" style="top: 5%; right: 10%;">El amor verdadero no se busca, se encuentra cuando menos lo esperas.</div>
+    <div class="frase-flotante" style="top: 40%; left: 40%;">Tú eres mi refugio, mi sonrisa en los días grises.</div>
+    <div class="frase-flotante" style="top: 60%; right: 10%;">Mi amor por ti crece con cada latido de mi corazón.</div>
+    <div class="frase-flotante" style="top: 80%; left: 30%;">No puedo pedir nada más, porque tenerte a ti ya es todo lo que necesito.</div>
+    <div class="frase-flotante" style="top: 20%; left: 40%;">Cada vez que pienso en ti, me doy cuenta de que eres mi todo.</div>
 
     <script>
-        function abrirSorpresa() {
-            // 1. Quitar la pantalla inicial inmediatamente
-            document.getElementById('landing').style.display = 'none';
+        const btnEntrar = document.getElementById('btn-entrar');
+        const musica = document.getElementById('musica');
 
-            // 2. Intentar reproducir música de fondo sin bloquear el resto
-            try {
-                document.getElementById('musica').play();
-            } catch (e) {
-                console.log("Música bloqueada por el navegador");
-            }
+        btnEntrar.addEventListener('click', async () => {
+            musica.play().catch(e => console.log("Audio esperando interacción"));
+            
+            const landing = document.getElementById('landing');
+            landing.style.opacity = '0';
+            setTimeout(() => landing.style.display = 'none', 1000);
 
-            // 3. Mostrar las fotos y frases
-            const elementos = document.querySelectorAll('.elemento-oculto');
-            elementos.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                    animarFlote(el);
-                }, 500 + (index * 600));
+            iniciarUniverso3D();
+
+            document.querySelectorAll('.foto-flotante, .frase-flotante').forEach((el, i) => {
+                setTimeout(() => { el.style.opacity = '0.8'; animarFlote(el); }, 1000 + (i * 800));
             });
+        });
+
+        function animarFlote(el) {
+            let t = Math.random() * 100;
+            setInterval(() => { t += 0.02; el.style.transform = translateY(${Math.sin(t) * 15}px); }, 30);
         }
 
-        function animarFlote(elemento) {
-            let tiempo = Math.random() * 100;
-            setInterval(() => {
-                tiempo += 0.05;
-                elemento.style.transform = translateY(${Math.sin(tiempo) * 10}px);
-            }, 30);
-        }
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        try {
+        function iniciarUniverso3D() {
+            const container = document.getElementById('canvas-container');
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            container.appendChild(renderer.domElement);
 
             const starGeo = new THREE.BufferGeometry();
-            const starPos = new Float32Array(3000 * 3);
-            for(let i=0; i<9000; i++) starPos[i] = (Math.random() - 0.5) * 400;
-            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+            const pos = new Float32Array(3000 * 3);
+            for(let i=0; i<9000; i++) pos[i] = (Math.random() - 0.5) * 400;
+            starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
             const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.5}));
             scene.add(stars);
 
             const heartGeo = new THREE.BufferGeometry();
-            const heartPos = new Float32Array(1500 * 3);
+            const hPos = new Float32Array(1500 * 3);
             for (let i = 0; i < 1500; i++) {
                 const t = Math.random() * Math.PI * 2;
-                heartPos[i*3] = (16 * Math.pow(Math.sin(t), 3)) * 1.5;
-                heartPos[i*3+1] = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 1.5;
-                heartPos[i*3+2] = (Math.random() - 0.5) * 5;
+                hPos[i*3] = (16 * Math.pow(Math.sin(t), 3)) * 1.5;
+                hPos[i*3+1] = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 1.5;
             }
-            heartGeo.setAttribute('position', new THREE.BufferAttribute(heartPos, 3));
-            const heart = new THREE.Points(heartGeo, new THREE.PointsMaterial({color: 0x99ccff, size: 1.2}));
+            heartGeo.setAttribute('position', new THREE.BufferAttribute(hPos, 3));
+            const heart = new THREE.Points(heartGeo, new THREE.PointsMaterial({color: 0x99ccff, size: 1.2, blending: THREE.AdditiveBlending}));
             scene.add(heart);
 
             camera.position.z = 60;
-
             function animate() {
                 requestAnimationFrame(animate);
                 stars.rotation.y += 0.0005;
@@ -141,8 +121,6 @@
                 renderer.render(scene, camera);
             }
             animate();
-        } catch(e) {
-            console.log("El 3D no cargó, pero el universo sigue activo.");
         }
     </script>
 </body>
