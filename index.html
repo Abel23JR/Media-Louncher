@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para mi enamorada Mayda 🥰</title>
+    <title>Para Mayda 🥰</title>
     <style>
         body, html {
             margin: 0;
@@ -24,6 +24,7 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+            pointer-events: none; /* Solución: el fondo no bloquea el clic */
         }
 
         /* --- PANTALLA DE INICIO Y BOTÓN --- */
@@ -37,6 +38,7 @@
             box-shadow: 0 0 30px rgba(255, 179, 217, 0.2);
             backdrop-filter: blur(5px);
             transition: opacity 1s ease-in-out;
+            pointer-events: auto; /* Solución: el botón es clicable */
         }
 
         #intro-title {
@@ -216,14 +218,12 @@
 </head>
 <body>
 
-<!-- MÚSICA DESDE CLOUDINARY -->
 <audio id="musica-fondo">
     <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
 </audio>
 
 <div id="canvas-container"></div>
 
-<!-- GALERÍA DE FOTOS OCULTA (SE REVELA AL FINAL) -->
 <div id="photo-gallery">
     <div class="photo-container" style="top: 8%; left: 8%; --rot: -12deg;">
         <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" alt="Mayda 1">
@@ -239,9 +239,8 @@
     </div>
 </div>
 
-<!-- PANTALLA INICIAL -->
 <div id="intro-screen">
-    <div id="intro-title">Buenos días, Mi Amor ✨</div>
+    <div id="intro-title">Buenas noches, Mi Amor ✨</div>
     <div id="intro-text">
         La vida es más bonita desde que nuestras risas se encontraron.<br>
         Este pequeño universo digital está lleno de estrellas que brillan gracias a ti.
@@ -249,7 +248,6 @@
     <button id="start-button">✨ ENTRAR AL UNIVERSO ✨</button>
 </div>
 
-<!-- MENSAJE FINAL -->
 <div id="messages">
     <div id="greeting">Mi Hermosa Mayda</div>
     <div id="personal-message">
@@ -268,7 +266,6 @@
     const keyOrbeCount = 25; 
     const keywords = ['Mayda', 'Hermosa', 'Amor', 'Juntos', 'Siempre', 'Tú', 'Sonrisa', 'Mágica', 'Mi Sol', 'Felicidad'];
 
-    // Crear estrellas de fondo
     for (let i = 0; i < orbeCount; i++) {
         const orbe = document.createElement('div');
         orbe.classList.add('orbe');
@@ -278,7 +275,6 @@
         canvasContainer.appendChild(orbe);
     }
 
-    // Crear palabras flotantes
     for (let i = 0; i < keyOrbeCount; i++) {
         const keyOrbe = document.createElement('div');
         keyOrbe.classList.add('key-orbe');
@@ -295,7 +291,6 @@
         canvasContainer.appendChild(keyOrbe);
     }
 
-    // Preparar partículas del corazón
     let heartParticles = [];
     const particleCount = 200; 
     for (let i = 0; i < particleCount; i++) {
@@ -311,27 +306,16 @@
         return { x: x * scaleFactor, y: -y * scaleFactor }; 
     }
 
-    // --- LA MAGIA COMIENZA AQUÍ ---
     startButton.addEventListener('click', () => {
-        
-        // 1. REPRODUCIR LA MÚSICA
         musica.play();
-
-        // 2. Ocultar pantalla inicial
         introScreen.style.opacity = '0';
         setTimeout(() => {
             introScreen.style.display = 'none';
             messages.style.display = 'block'; 
         }, 1000);
 
-        // 3. Secuencia de animación
         setTimeout(() => {
-            // Disolver palabras
-            document.querySelectorAll('.key-orbe').forEach(o => {
-                o.style.animation = 'fadeOut 3s forwards'; 
-            });
-
-            // Formar el corazón
+            document.querySelectorAll('.key-orbe').forEach(o => { o.style.animation = 'fadeOut 3s forwards'; });
             heartParticles.forEach((p, index) => {
                 const t = (index / particleCount) * Math.PI * 2;
                 const point = getHeartPoint(t, 11); 
@@ -340,7 +324,6 @@
                 p.style.top = calc(50% + ${point.y}px);
             });
 
-            // Añadir destellos al corazón
             setTimeout(() => {
                 for (let i = 0; i < 30; i++) { 
                     const sparkle = document.createElement('div');
@@ -354,44 +337,23 @@
                 }
             }, 3000); 
 
-            // Hacer latir el corazón
             setTimeout(() => {
-                heartParticles.forEach(p => {
-                    p.style.animation = 'pulseHeart 2.5s infinite ease-in-out';
-                });
-
-                // Disolver el corazón y mostrar FOTOS + MENSAJE
+                heartParticles.forEach(p => { p.style.animation = 'pulseHeart 2.5s infinite ease-in-out'; });
                 setTimeout(() => {
-                    // Desaparecer corazón
                     heartParticles.forEach(p => {
                         p.style.transition = 'opacity 4s ease-in-out, transform 4s ease-in-out';
                         p.style.opacity = '0';
                         p.style.transform = 'scale(0.1)';
                     });
-                    document.querySelectorAll('.heart-sparkle').forEach(s => {
-                        s.style.animation = 'fadeOut 3s forwards';
+                    document.querySelectorAll('.heart-sparkle').forEach(s => { s.style.animation = 'fadeOut 3s forwards'; });
+                    document.querySelectorAll('.photo-container').forEach((photo, index) => {
+                        setTimeout(() => { photo.classList.add('visible'); }, index * 800);
                     });
-
-                    // APARECEN LAS FOTOS UNA POR UNA
-                    const photos = document.querySelectorAll('.photo-container');
-                    photos.forEach((photo, index) => {
-                        setTimeout(() => {
-                            photo.classList.add('visible');
-                        }, index * 800); // Retraso de 0.8s entre cada foto
-                    });
-
-                    // APARECE EL MENSAJE FINAL
-                    setTimeout(() => {
-                        messages.style.opacity = '1';
-                    }, 1500); // El mensaje aparece poco después de las primeras fotos
-
-                }, 7500); // Tiempo que el corazón se queda en pantalla
-
-            }, 4500); // Tiempo hasta que empieza a latir
-
-        }, 1500); // Tiempo después de presionar el botón
+                    setTimeout(() => { messages.style.opacity = '1'; }, 1500);
+                }, 7500); 
+            }, 4500); 
+        }, 1500); 
     });
-
 </script>
 </body>
 </html>
