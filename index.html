@@ -26,17 +26,28 @@
 
         #btn-entrar:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(75, 108, 183, 0.8); }
 
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        /* Contenedor 3D oculto por defecto */
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0; transition: opacity 1.5s ease-in; }
 
         .foto-flotante, .frase-flotante { opacity: 0; transition: opacity 2s ease-in; pointer-events: none; }
         .foto-flotante { position: absolute; width: 180px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.5); z-index: 10; box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
         .frase-flotante { position: absolute; color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 5; text-align: center; max-width: 300px;}
+
+        /* NUEVO: Animación CSS altamente optimizada en lugar de JavaScript */
+        @keyframes flotar {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .flotando-anim {
+            animation: flotar 4s infinite ease-in-out;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <audio id="musica" loop>
+    <audio id="musica" loop preload="auto">
         <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
     </audio>
 
@@ -48,50 +59,35 @@
 
     <div id="canvas-container"></div>
 
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="foto-flotante" style="top: 15%; left: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="foto-flotante" style="bottom: 20%; right: 15%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="foto-flotante" style="top: 20%; right: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="foto-flotante" style="bottom: 15%; left: 15%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="foto-flotante flotando-anim" style="top: 15%; left: 10%; animation-delay: 0s;" loading="lazy">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="foto-flotante flotando-anim" style="bottom: 20%; right: 15%; animation-delay: 1s;" loading="lazy">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="foto-flotante flotando-anim" style="top: 20%; right: 10%; animation-delay: 0.5s;" loading="lazy">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="foto-flotante flotando-anim" style="bottom: 15%; left: 15%; animation-delay: 1.5s;" loading="lazy">
 
-    <div class="frase-flotante" style="top: 10%; left: 40%;">Te amo no solo por lo que eres, sino por lo que soy cuando estoy contigo.</div>
-    <div class="frase-flotante" style="top: 30%; left: 5%;">Desde que llegaste a mi vida, todo tiene más sentido.</div>
-    <div class="frase-flotante" style="top: 50%; right: 5%;">Te amo con la fuerza de mil estrellas y, aun así, siento que es poco.</div>
-    <div class="frase-flotante" style="top: 70%; left: 10%;">En tus ojos encuentro mi paz; y, en tu sonrisa, mi razón de ser.</div>
-    <div class="frase-flotante" style="top: 90%; left: 40%;">No necesito promesas, solo tu amor sincero cada día.</div>
-    <div class="frase-flotante" style="top: 5%; right: 10%;">El amor verdadero no se busca, se encuentra cuando menos lo esperas.</div>
-    <div class="frase-flotante" style="top: 40%; left: 40%;">Tú eres mi refugio, mi sonrisa en los días grises.</div>
-    <div class="frase-flotante" style="top: 60%; right: 10%;">Mi amor por ti crece con cada latido de mi corazón.</div>
-    <div class="frase-flotante" style="top: 80%; left: 30%;">No puedo pedir nada más, porque tenerte a ti ya es todo lo que necesito.</div>
-    <div class="frase-flotante" style="top: 20%; left: 40%;">Cada vez que pienso en ti, me doy cuenta de que eres mi todo.</div>
+    <div class="frase-flotante flotando-anim" style="top: 10%; left: 40%; animation-delay: 0.2s;">Te amo no solo por lo que eres, sino por lo que soy cuando estoy contigo.</div>
+    <div class="frase-flotante flotando-anim" style="top: 30%; left: 5%; animation-delay: 0.8s;">Desde que llegaste a mi vida, todo tiene más sentido.</div>
+    <div class="frase-flotante flotando-anim" style="top: 50%; right: 5%; animation-delay: 1.2s;">Te amo con la fuerza de mil estrellas y, aun así, siento que es poco.</div>
+    <div class="frase-flotante flotando-anim" style="top: 70%; left: 10%; animation-delay: 0.4s;">En tus ojos encuentro mi paz; y, en tu sonrisa, mi razón de ser.</div>
+    <div class="frase-flotante flotando-anim" style="top: 90%; left: 40%; animation-delay: 1.6s;">No necesito promesas, solo tu amor sincero cada día.</div>
+    <div class="frase-flotante flotando-anim" style="top: 5%; right: 10%; animation-delay: 0.3s;">El amor verdadero no se busca, se encuentra cuando menos lo esperas.</div>
+    <div class="frase-flotante flotando-anim" style="top: 40%; left: 40%; animation-delay: 0.9s;">Tú eres mi refugio, mi sonrisa en los días grises.</div>
+    <div class="frase-flotante flotando-anim" style="top: 60%; right: 10%; animation-delay: 1.1s;">Mi amor por ti crece con cada latido de mi corazón.</div>
+    <div class="frase-flotante flotando-anim" style="top: 80%; left: 30%; animation-delay: 0.6s;">No puedo pedir nada más, porque tenerte a ti ya es todo lo que necesito.</div>
+    <div class="frase-flotante flotando-anim" style="top: 20%; left: 40%; animation-delay: 1.4s;">Cada vez que pienso en ti, me doy cuenta de que eres mi todo.</div>
 
     <script>
         const btnEntrar = document.getElementById('btn-entrar');
         const musica = document.getElementById('musica');
+        const container = document.getElementById('canvas-container');
+        
+        let scene, camera, renderer, stars, heart;
+        let animacionCorriendo = false;
 
-        btnEntrar.addEventListener('click', async () => {
-            musica.play().catch(e => console.log("Audio esperando interacción"));
-            
-            const landing = document.getElementById('landing');
-            landing.style.opacity = '0';
-            setTimeout(() => landing.style.display = 'none', 1000);
-
-            iniciarUniverso3D();
-
-            document.querySelectorAll('.foto-flotante, .frase-flotante').forEach((el, i) => {
-                setTimeout(() => { el.style.opacity = '0.8'; animarFlote(el); }, 1000 + (i * 800));
-            });
-        });
-
-        function animarFlote(el) {
-            let t = Math.random() * 100;
-            setInterval(() => { t += 0.02; el.style.transform = translateY(${Math.sin(t) * 15}px); }, 30);
-        }
-
-        function iniciarUniverso3D() {
-            const container = document.getElementById('canvas-container');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // 1. PRE-CARGA 3D: Se construye el universo silenciosamente mientras el usuario lee "Buenos días"
+        function prepararUniverso3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
 
@@ -99,7 +95,7 @@
             const pos = new Float32Array(3000 * 3);
             for(let i=0; i<9000; i++) pos[i] = (Math.random() - 0.5) * 400;
             starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.5}));
+            stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.5}));
             scene.add(stars);
 
             const heartGeo = new THREE.BufferGeometry();
@@ -110,18 +106,54 @@
                 hPos[i*3+1] = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 1.5;
             }
             heartGeo.setAttribute('position', new THREE.BufferAttribute(hPos, 3));
-            const heart = new THREE.Points(heartGeo, new THREE.PointsMaterial({color: 0x99ccff, size: 1.2, blending: THREE.AdditiveBlending}));
+            heart = new THREE.Points(heartGeo, new THREE.PointsMaterial({color: 0x99ccff, size: 1.2, blending: THREE.AdditiveBlending}));
             scene.add(heart);
 
             camera.position.z = 60;
-            function animate() {
-                requestAnimationFrame(animate);
-                stars.rotation.y += 0.0005;
-                heart.rotation.y += 0.005;
-                renderer.render(scene, camera);
-            }
-            animate();
         }
+
+        // Ejecutar preparación al cargar la página
+        prepararUniverso3D();
+
+        function animar3D() {
+            if (!animacionCorriendo) return;
+            requestAnimationFrame(animar3D);
+            stars.rotation.y += 0.0005;
+            heart.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+
+        // 2. EL CLIC AHORA ES LIGERO
+        btnEntrar.addEventListener('click', () => {
+            // Reproducir música (operación ligera porque ya está precargada)
+            musica.play().catch(e => console.log("Audio esperando interacción"));
+            
+            // Iniciar desvanecimiento del menú
+            const landing = document.getElementById('landing');
+            landing.style.opacity = '0';
+            
+            // Retrasar el inicio del 3D unos milisegundos para que la pantalla no se congele durante el clic
+            setTimeout(() => {
+                landing.style.display = 'none';
+                container.style.opacity = '1';
+                animacionCorriendo = true;
+                animar3D(); // Arranca el movimiento de las estrellas
+            }, 800);
+
+            // Mostrar fotos y frases de forma secuencial y limpia
+            document.querySelectorAll('.foto-flotante, .frase-flotante').forEach((el, i) => {
+                setTimeout(() => { 
+                    el.style.opacity = '0.8'; 
+                }, 1200 + (i * 400));
+            });
+        });
+
+        // Asegurar que el 3D no se deforme si se gira el celular o se cambia tamaño de ventana
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
