@@ -15,7 +15,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Pantalla de inicio */
         #landing {
             position: absolute;
             top: 0;
@@ -73,12 +72,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        #btn-entrar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(75, 108, 183, 0.8);
-        }
-
-        /* Contenedor del universo 3D */
         #canvas-container {
             position: absolute;
             top: 0;
@@ -88,7 +81,6 @@
             z-index: 1;
         }
 
-        /* Fotografías flotantes */
         .foto-flotante {
             position: absolute;
             width: 180px;
@@ -102,7 +94,6 @@
             pointer-events: none;
         }
 
-        /* Frases flotantes */
         .frase-flotante {
             position: absolute;
             color: rgba(255, 255, 255, 0.8);
@@ -115,7 +106,6 @@
             text-align: center;
         }
 
-        /* Ajustes responsivos para celulares */
         @media (max-width: 768px) {
             #landing h1 { font-size: 2.5rem; }
             #landing h2 { font-size: 1.5rem; }
@@ -139,7 +129,7 @@
             <p>⭐ La vida es más bonita desde que nuestras risas se encontraron.</p>
             <p>Este pequeño universo digital está lleno de estrellas que brillan gracias a ti, preparadas especialmente para cuando necesitemos un momento relajado y lleno de magia.</p>
         </div>
-        <button id="btn-entrar">✦ Entrar al Universo ✦</button>
+        <button id="btn-entrar" onclick="iniciarSorpresa()">✦ Entrar al Universo ✦</button>
     </div>
 
     <div id="canvas-container"></div>
@@ -155,60 +145,42 @@
     <div class="frase-flotante" style="top: 10%; left: 40%;">🎮 Gatitos de Minecraft</div>
 
     <script>
-        // --- LÓGICA ROBUSTA DE BOTONES ---
-        const btnEntrar = document.getElementById('btn-entrar');
-        const musica = document.getElementById('musica');
-        const landing = document.getElementById('landing');
+        // LÓGICA SIMPLIFICADA Y SEGURA
+        function iniciarSorpresa() {
+            const btnEntrar = document.getElementById('btn-entrar');
+            const landing = document.getElementById('landing');
+            const musica = document.getElementById('musica');
 
-        // Función robusta para iniciar la sorpresa
-        function iniciarUniverso(evento) {
-            // Evitamos que el celular dispare el evento dos veces (toque + clic fantasma)
-            if (evento) evento.preventDefault(); 
-            
-            // Cambiamos el texto para que sepa que está cargando
-            btnEntrar.innerText = "Cargando magia...";
-            btnEntrar.style.opacity = "0.7";
-            btnEntrar.style.pointerEvents = "none";
+            // 1. Cambiar visualmente el botón para que sepa que funcionó
+            btnEntrar.innerText = "Entrando...";
+            btnEntrar.style.pointerEvents = "none"; // Evita múltiples clics
 
-            // Forzamos la reproducción de la música
+            // 2. Intentar reproducir la música de inmediato
             let playPromise = musica.play();
-
+            
             if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // ¡La música empezó! Quitamos la pantalla de inicio
-                    landing.style.opacity = '0';
-                    setTimeout(() => {
-                        landing.style.display = 'none';
-                    }, 1000);
-
-                    // Mostramos las fotos y las frases una por una
-                    const elementos = document.querySelectorAll('.foto-flotante, .frase-flotante');
-                    elementos.forEach((el, index) => {
-                        setTimeout(() => {
-                            el.style.opacity = '0.8';
-                            animarFlote(el);
-                        }, 1000 + (index * 800));
-                    });
-
-                    // Desactivamos los botones para evitar toques extra
-                    btnEntrar.removeEventListener('click', iniciarUniverso);
-                    btnEntrar.removeEventListener('touchstart', iniciarUniverso);
-                    
-                }).catch(error => {
-                    // Si el celular bloquea el audio, permitimos un intento más
-                    console.log("Audio bloqueado, esperando confirmación", error);
-                    btnEntrar.innerText = "✦ Toca una vez más ✦";
-                    btnEntrar.style.opacity = "1";
-                    btnEntrar.style.pointerEvents = "auto";
+                playPromise.catch(error => {
+                    console.log("El navegador bloqueó el autoplay del audio, pero la sorpresa continúa.");
                 });
             }
+
+            // 3. Desaparecer la pantalla de inicio SIN IMPORTAR si el audio cargó o no
+            landing.style.opacity = '0';
+            setTimeout(() => {
+                landing.style.display = 'none';
+            }, 1000);
+
+            // 4. Mostrar fotos y frases progresivamente
+            const elementos = document.querySelectorAll('.foto-flotante, .frase-flotante');
+            elementos.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '0.8';
+                    animarFlote(el);
+                }, 1000 + (index * 800));
+            });
         }
 
-        // Escuchamos tanto el clic del mouse (laptop) como el toque de pantalla (celular)
-        btnEntrar.addEventListener('click', iniciarUniverso);
-        btnEntrar.addEventListener('touchstart', iniciarUniverso, { passive: false });
-
-        // Animación suave CSS/JS para que las imágenes floten lentamente
+        // Animación suave de flote
         function animarFlote(elemento) {
             let tiempo = Math.random() * 100;
             setInterval(() => {
@@ -218,7 +190,7 @@
             }, 30);
         }
 
-        // --- CONFIGURACIÓN THREE.JS (El corazón y la galaxia) ---
+        // --- CONFIGURACIÓN THREE.JS ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -227,13 +199,12 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // Crear las estrellas de fondo
         const starGeometry = new THREE.BufferGeometry();
         const starCount = 3000;
         const starArray = new Float32Array(starCount * 3);
 
         for(let i = 0; i < starCount * 3; i++) {
-            starArray[i] = (Math.random() - 0.5) * 400; // Distribución amplia
+            starArray[i] = (Math.random() - 0.5) * 400;
         }
         
         starGeometry.setAttribute('position', new THREE.BufferAttribute(starArray, 3));
@@ -246,19 +217,16 @@
         const stars = new THREE.Points(starGeometry, starMaterial);
         scene.add(stars);
 
-        // Crear el Corazón de Partículas (Ecuación matemática del corazón)
         const heartGeometry = new THREE.BufferGeometry();
         const heartParticles = 1500;
         const heartPositions = new Float32Array(heartParticles * 3);
 
         for (let i = 0; i < heartParticles; i++) {
-            // Ecuación paramétrica del corazón
             const t = Math.random() * Math.PI * 2;
             const x = 16 * Math.pow(Math.sin(t), 3);
             const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-            const z = (Math.random() - 0.5) * 5; // Grosor del corazón
+            const z = (Math.random() - 0.5) * 5;
 
-            // Escalar para que se vea bien en pantalla
             heartPositions[i * 3] = x * 1.5;
             heartPositions[i * 3 + 1] = y * 1.5;
             heartPositions[i * 3 + 2] = z;
@@ -266,13 +234,12 @@
 
         heartGeometry.setAttribute('position', new THREE.BufferAttribute(heartPositions, 3));
         
-        // Material del corazón brilloso
         const heartMaterial = new THREE.PointsMaterial({
-            color: 0x99ccff, // Tono azul claro/celeste
+            color: 0x99ccff,
             size: 1.2,
             transparent: true,
             opacity: 0.9,
-            blending: THREE.AdditiveBlending // Efecto de luz
+            blending: THREE.AdditiveBlending
         });
 
         const heart = new THREE.Points(heartGeometry, heartMaterial);
@@ -280,24 +247,17 @@
 
         camera.position.z = 60;
 
-        // Bucle de animación
         function animate() {
             requestAnimationFrame(animate);
-
-            // Rotación del universo
             stars.rotation.y += 0.0005;
             stars.rotation.x += 0.0002;
-
-            // Rotación suave del corazón
             heart.rotation.y += 0.005;
-            heart.rotation.x = Math.sin(Date.now() * 0.001) * 0.2; // Ligero balanceo
-
+            heart.rotation.x = Math.sin(Date.now() * 0.001) * 0.2;
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // Ajustar al cambiar el tamaño de la ventana
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
