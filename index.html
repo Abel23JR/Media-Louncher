@@ -5,120 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Universo para Ti</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        
         #landing {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: linear-gradient(135deg, #050510 0%, #1a1a3a 100%);
-            z-index: 100;
-            color: white;
-            text-align: center;
-            transition: opacity 1s ease-out;
+            z-index: 100; color: white; text-align: center;
         }
 
-        #landing h1 {
-            font-size: 3.5rem;
-            color: #72aee6;
-            text-shadow: 0 0 15px rgba(114, 174, 230, 0.6);
-            margin-bottom: 0.5rem;
-        }
-
-        #landing h2 {
-            font-size: 2rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-            color: #d1e8ff;
-        }
-
+        #landing h1 { color: #72aee6; text-shadow: 0 0 15px rgba(114, 174, 230, 0.6); margin-bottom: 0.5rem; }
+        #landing h2 { font-weight: 300; margin-bottom: 2rem; color: #d1e8ff; }
+        
         .mensaje-inicio {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px 40px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 600px;
-            margin-bottom: 3rem;
-            font-size: 1.1rem;
-            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1); max-width: 90%; margin-bottom: 3rem;
         }
 
         #btn-entrar {
             background: linear-gradient(45deg, #4b6cb7 0%, #182848 100%);
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(75, 108, 183, 0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            -webkit-tap-highlight-color: transparent;
+            border: none; padding: 15px 40px; font-size: 1.2rem; color: white;
+            border-radius: 30px; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(75, 108, 183, 0.5); z-index: 101; position: relative;
         }
 
-        #canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        .elemento-oculto {
+            position: absolute; opacity: 0; z-index: 10;
+            transition: opacity 2s ease-in; pointer-events: none;
         }
 
-        .foto-flotante {
-            position: absolute;
-            width: 180px;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-            opacity: 0;
-            z-index: 10;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            transition: opacity 2s ease-in;
-            pointer-events: none;
-        }
-
-        .frase-flotante {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            z-index: 5;
-            transition: opacity 2s ease-in;
-            pointer-events: none;
-            text-align: center;
-        }
+        .foto { width: 150px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.5); }
+        .frase { color: white; font-size: 1.2rem; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); text-align: center; }
 
         @media (max-width: 768px) {
-            #landing h1 { font-size: 2.5rem; }
-            #landing h2 { font-size: 1.5rem; }
-            .mensaje-inicio { padding: 15px 20px; font-size: 1rem; margin: 0 20px 2rem 20px; }
-            .foto-flotante { width: 120px; }
-            .frase-flotante { font-size: 1rem; }
+            #landing h1 { font-size: 2rem; }
+            .foto { width: 110px; }
+            .frase { font-size: 1rem; }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <audio id="musica" loop preload="auto">
+    <audio id="musica" loop>
         <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
     </audio>
 
@@ -127,142 +57,93 @@
         <h2>Mi Amor</h2>
         <div class="mensaje-inicio">
             <p>⭐ La vida es más bonita desde que nuestras risas se encontraron.</p>
-            <p>Este pequeño universo digital está lleno de estrellas que brillan gracias a ti, preparadas especialmente para cuando necesitemos un momento relajado y lleno de magia.</p>
         </div>
-        <button id="btn-entrar" onclick="iniciarSorpresa()">✦ Entrar al Universo ✦</button>
+        <button id="btn-entrar" onclick="abrirSorpresa()">✦ Entrar al Universo ✦</button>
     </div>
 
     <div id="canvas-container"></div>
 
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="foto-flotante" id="foto1" style="top: 15%; left: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="foto-flotante" id="foto2" style="bottom: 20%; right: 15%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="foto-flotante" id="foto3" style="top: 20%; right: 10%;">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="foto-flotante" id="foto4" style="bottom: 15%; left: 15%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="elemento-oculto foto" style="top: 15%; left: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="elemento-oculto foto" style="bottom: 20%; right: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="elemento-oculto foto" style="top: 20%; right: 10%;">
+    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="elemento-oculto foto" style="bottom: 15%; left: 10%;">
 
-    <div class="frase-flotante" style="top: 40%; left: 5%;">🧭 Tu Norte seguro</div>
-    <div class="frase-flotante" style="top: 60%; right: 5%;">💍 Mi mayor amuleto</div>
-    <div class="frase-flotante" style="top: 80%; left: 30%;">🐱 Amor, a menos que te cases conmigo voy a ser cariñosa</div>
-    <div class="frase-flotante" style="top: 10%; left: 40%;">🎮 Gatitos de Minecraft</div>
+    <div class="elemento-oculto frase" style="top: 40%; left: 5%;">🧭 Tu Norte seguro</div>
+    <div class="elemento-oculto frase" style="top: 60%; right: 5%;">💍 Mi mayor amuleto</div>
+    <div class="elemento-oculto frase" style="top: 80%; left: 20%;">🐱 Amor, a menos que te cases conmigo voy a ser cariñosa</div>
+    <div class="elemento-oculto frase" style="top: 10%; left: 35%;">🎮 Gatitos de Minecraft</div>
 
     <script>
-        // LÓGICA SIMPLIFICADA Y SEGURA
-        function iniciarSorpresa() {
-            const btnEntrar = document.getElementById('btn-entrar');
-            const landing = document.getElementById('landing');
-            const musica = document.getElementById('musica');
+        function abrirSorpresa() {
+            // 1. Quitar la pantalla inicial inmediatamente
+            document.getElementById('landing').style.display = 'none';
 
-            // 1. Cambiar visualmente el botón para que sepa que funcionó
-            btnEntrar.innerText = "Entrando...";
-            btnEntrar.style.pointerEvents = "none"; // Evita múltiples clics
-
-            // 2. Intentar reproducir la música de inmediato
-            let playPromise = musica.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("El navegador bloqueó el autoplay del audio, pero la sorpresa continúa.");
-                });
+            // 2. Intentar reproducir música de fondo sin bloquear el resto
+            try {
+                document.getElementById('musica').play();
+            } catch (e) {
+                console.log("Música bloqueada por el navegador");
             }
 
-            // 3. Desaparecer la pantalla de inicio SIN IMPORTAR si el audio cargó o no
-            landing.style.opacity = '0';
-            setTimeout(() => {
-                landing.style.display = 'none';
-            }, 1000);
-
-            // 4. Mostrar fotos y frases progresivamente
-            const elementos = document.querySelectorAll('.foto-flotante, .frase-flotante');
+            // 3. Mostrar las fotos y frases
+            const elementos = document.querySelectorAll('.elemento-oculto');
             elementos.forEach((el, index) => {
                 setTimeout(() => {
-                    el.style.opacity = '0.8';
+                    el.style.opacity = '1';
                     animarFlote(el);
-                }, 1000 + (index * 800));
+                }, 500 + (index * 600));
             });
         }
 
-        // Animación suave de flote
         function animarFlote(elemento) {
             let tiempo = Math.random() * 100;
             setInterval(() => {
-                tiempo += 0.02;
-                const offsetY = Math.sin(tiempo) * 15;
-                elemento.style.transform = translateY(${offsetY}px);
+                tiempo += 0.05;
+                elemento.style.transform = translateY(${Math.sin(tiempo) * 10}px);
             }, 30);
         }
+    </script>
 
-        // --- CONFIGURACIÓN THREE.JS ---
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
-
-        const starGeometry = new THREE.BufferGeometry();
-        const starCount = 3000;
-        const starArray = new Float32Array(starCount * 3);
-
-        for(let i = 0; i < starCount * 3; i++) {
-            starArray[i] = (Math.random() - 0.5) * 400;
-        }
-        
-        starGeometry.setAttribute('position', new THREE.BufferAttribute(starArray, 3));
-        const starMaterial = new THREE.PointsMaterial({
-            color: 0xffffff,
-            size: 0.5,
-            transparent: true,
-            opacity: 0.8
-        });
-        const stars = new THREE.Points(starGeometry, starMaterial);
-        scene.add(stars);
-
-        const heartGeometry = new THREE.BufferGeometry();
-        const heartParticles = 1500;
-        const heartPositions = new Float32Array(heartParticles * 3);
-
-        for (let i = 0; i < heartParticles; i++) {
-            const t = Math.random() * Math.PI * 2;
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-            const z = (Math.random() - 0.5) * 5;
-
-            heartPositions[i * 3] = x * 1.5;
-            heartPositions[i * 3 + 1] = y * 1.5;
-            heartPositions[i * 3 + 2] = z;
-        }
-
-        heartGeometry.setAttribute('position', new THREE.BufferAttribute(heartPositions, 3));
-        
-        const heartMaterial = new THREE.PointsMaterial({
-            color: 0x99ccff,
-            size: 1.2,
-            transparent: true,
-            opacity: 0.9,
-            blending: THREE.AdditiveBlending
-        });
-
-        const heart = new THREE.Points(heartGeometry, heartMaterial);
-        scene.add(heart);
-
-        camera.position.z = 60;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.y += 0.0005;
-            stars.rotation.x += 0.0002;
-            heart.rotation.y += 0.005;
-            heart.rotation.x = Math.sin(Date.now() * 0.001) * 0.2;
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        try {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            const starGeo = new THREE.BufferGeometry();
+            const starPos = new Float32Array(3000 * 3);
+            for(let i=0; i<9000; i++) starPos[i] = (Math.random() - 0.5) * 400;
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+            const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.5}));
+            scene.add(stars);
+
+            const heartGeo = new THREE.BufferGeometry();
+            const heartPos = new Float32Array(1500 * 3);
+            for (let i = 0; i < 1500; i++) {
+                const t = Math.random() * Math.PI * 2;
+                heartPos[i*3] = (16 * Math.pow(Math.sin(t), 3)) * 1.5;
+                heartPos[i*3+1] = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 1.5;
+                heartPos[i*3+2] = (Math.random() - 0.5) * 5;
+            }
+            heartGeo.setAttribute('position', new THREE.BufferAttribute(heartPos, 3));
+            const heart = new THREE.Points(heartGeo, new THREE.PointsMaterial({color: 0x99ccff, size: 1.2}));
+            scene.add(heart);
+
+            camera.position.z = 60;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                stars.rotation.y += 0.0005;
+                heart.rotation.y += 0.005;
+                renderer.render(scene, camera);
+            }
+            animate();
+        } catch(e) {
+            console.log("El 3D no cargó, pero el universo sigue activo.");
+        }
     </script>
 </body>
 </html>
