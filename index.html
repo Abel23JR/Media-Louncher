@@ -3,157 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Universo para Ti</title>
+    <title>Algo de Rosas y Amor</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-        #landing {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, #050510 0%, #1a1a3a 100%);
-            z-index: 100; color: white; text-align: center; transition: opacity 1s ease-out;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h1 { font-size: 3.5rem; color: #72aee6; margin-bottom: 0.5rem; }
-        h2 { font-size: 2rem; font-weight: 300; margin-bottom: 2rem; color: #d1e8ff; }
-
-        #btn-entrar {
-            background: linear-gradient(45deg, #4b6cb7 0%, #182848 100%);
-            border: none; padding: 15px 40px; font-size: 1.2rem; color: white;
-            border-radius: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(75, 108, 183, 0.5);
-            transition: transform 0.3s, box-shadow 0.3s; text-transform: uppercase;
+        body {
+            background: radial-gradient(circle at center, #2c0b14 0%, #120408 100%);
+            color: #fce4ec;
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
         }
 
-        #btn-entrar:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(75, 108, 183, 0.8); }
-
-        /* Contenedor 3D oculto por defecto */
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0; transition: opacity 1.5s ease-in; }
-
-        .foto-flotante, .frase-flotante { opacity: 0; transition: opacity 2s ease-in; pointer-events: none; }
-        .foto-flotante { position: absolute; width: 180px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.5); z-index: 10; box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
-        .frase-flotante { position: absolute; color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 5; text-align: center; max-width: 300px;}
-
-        /* NUEVO: Animación CSS altamente optimizada en lugar de JavaScript */
-        @keyframes flotar {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
-        .flotando-anim {
-            animation: flotar 4s infinite ease-in-out;
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: rgba(30, 8, 14, 0.75);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(229, 57, 53, 0.3);
+            border: 1px solid rgba(233, 30, 99, 0.3);
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(5px);
+        }
+
+        .rose-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            transition: transform 0.5s ease;
+        }
+
+        .rose-container.active {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 15px rgba(255, 64, 129, 0.8));
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #ff80ab;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .poem-box {
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            min-height: 80px;
+            margin-bottom: 25px;
+            color: #f8bbd0;
+            transition: opacity 0.5s ease;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, #c2185b, #e91e63);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #d81b60, #f06292);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <audio id="musica" loop preload="auto">
-        <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1781928617/Mi_vida_sin_ti_-_Jes%C3%BAs_Adrian_romero_-_C_Cmusicafull_128k_dfonnp.mp3" type="audio/mpeg">
-    </audio>
+    <!-- Canvas para la lluvia de pétalos -->
+    <canvas id="petalsCanvas"></canvas>
 
-    <div id="landing">
-        <h1>Buenos días ✨</h1>
-        <h2>Mi Amor</h2>
-        <button id="btn-entrar">✦ Entrar al Universo ✦</button>
+    <div class="container">
+        <!-- Rosa SVG Interactiva -->
+        <div class="rose-container" id="roseIcon">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <path d="M50 90 C 50 70, 30 50, 30 35 C 30 20, 45 15, 50 30 C 55 15, 70 20, 70 35 C 70 50, 50 70, 50 90 Z" fill="#c2185b" />
+                <path d="M50 85 C 45 65, 65 45, 60 30 C 55 20, 48 25, 50 35 C 52 25, 45 20, 40 30 C 35 45, 55 65, 50 85 Z" fill="#e91e63" />
+                <path d="M50 40 C 42 35, 40 45, 50 50 C 60 45, 58 35, 50 40 Z" fill="#ff80ab" />
+                <path d="M48 70 Q 40 65, 35 70 Q 45 80, 48 70 Z" fill="#4caf50" />
+                <path d="M52 70 Q 60 65, 65 70 Q 55 80, 52 70 Z" fill="#4caf50" />
+            </svg>
+        </div>
+
+        <h1>Algo de Rosas y Amor</h1>
+        
+        <div class="poem-box" id="poemText">
+            Haz clic en reproducir para escuchar la melodía y descubrir un verso...
+        </div>
+
+        <div class="btn-group">
+            <button id="playBtn">✨ Reproducer Melodía</button>
+            <button id="nextBtn">🌹 Otro Verso</button>
+        </div>
     </div>
 
-    <div id="canvas-container"></div>
-
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1775524344/xrrsqwzwxet2bqpey8mh.jpg" class="foto-flotante flotando-anim" style="top: 15%; left: 10%; animation-delay: 0s;" loading="lazy">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" class="foto-flotante flotando-anim" style="bottom: 20%; right: 15%; animation-delay: 1s;" loading="lazy">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" class="foto-flotante flotando-anim" style="top: 20%; right: 10%; animation-delay: 0.5s;" loading="lazy">
-    <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531768/jg9mt5nc4h6hkeweofsd.jpg" class="foto-flotante flotando-anim" style="bottom: 15%; left: 15%; animation-delay: 1.5s;" loading="lazy">
-
-    <div class="frase-flotante flotando-anim" style="top: 10%; left: 40%; animation-delay: 0.2s;">Te amo no solo por lo que eres, sino por lo que soy cuando estoy contigo.</div>
-    <div class="frase-flotante flotando-anim" style="top: 30%; left: 5%; animation-delay: 0.8s;">Desde que llegaste a mi vida, todo tiene más sentido.</div>
-    <div class="frase-flotante flotando-anim" style="top: 50%; right: 5%; animation-delay: 1.2s;">Te amo con la fuerza de mil estrellas y, aun así, siento que es poco.</div>
-    <div class="frase-flotante flotando-anim" style="top: 70%; left: 10%; animation-delay: 0.4s;">En tus ojos encuentro mi paz; y, en tu sonrisa, mi razón de ser.</div>
-    <div class="frase-flotante flotando-anim" style="top: 90%; left: 40%; animation-delay: 1.6s;">No necesito promesas, solo tu amor sincero cada día.</div>
-    <div class="frase-flotante flotando-anim" style="top: 5%; right: 10%; animation-delay: 0.3s;">El amor verdadero no se busca, se encuentra cuando menos lo esperas.</div>
-    <div class="frase-flotante flotando-anim" style="top: 40%; left: 40%; animation-delay: 0.9s;">Tú eres mi refugio, mi sonrisa en los días grises.</div>
-    <div class="frase-flotante flotando-anim" style="top: 60%; right: 10%; animation-delay: 1.1s;">Mi amor por ti crece con cada latido de mi corazón.</div>
-    <div class="frase-flotante flotando-anim" style="top: 80%; left: 30%; animation-delay: 0.6s;">No puedo pedir nada más, porque tenerte a ti ya es todo lo que necesito.</div>
-    <div class="frase-flotante flotando-anim" style="top: 20%; left: 40%; animation-delay: 1.4s;">Cada vez que pienso en ti, me doy cuenta de que eres mi todo.</div>
-
     <script>
-        const btnEntrar = document.getElementById('btn-entrar');
-        const musica = document.getElementById('musica');
-        const container = document.getElementById('canvas-container');
-        
-        let scene, camera, renderer, stars, heart;
-        let animacionCorriendo = false;
+        // --- 1. LLUVIA DE PÉTALOS (CANVAS) ---
+        const canvas = document.getElementById('petalsCanvas');
+        const ctx = canvas.getContext('2d');
 
-        // 1. PRE-CARGA 3D: Se construye el universo silenciosamente mientras el usuario lee "Buenos días"
-        function prepararUniverso3D() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-            const starGeo = new THREE.BufferGeometry();
-            const pos = new Float32Array(3000 * 3);
-            for(let i=0; i<9000; i++) pos[i] = (Math.random() - 0.5) * 400;
-            starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.5}));
-            scene.add(stars);
+        const petals = [];
+        const numPetals = 35;
 
-            const heartGeo = new THREE.BufferGeometry();
-            const hPos = new Float32Array(1500 * 3);
-            for (let i = 0; i < 1500; i++) {
-                const t = Math.random() * Math.PI * 2;
-                hPos[i*3] = (16 * Math.pow(Math.sin(t), 3)) * 1.5;
-                hPos[i*3+1] = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 1.5;
+        class Petal {
+            constructor() {
+                this.reset();
             }
-            heartGeo.setAttribute('position', new THREE.BufferAttribute(hPos, 3));
-            heart = new THREE.Points(heartGeo, new THREE.PointsMaterial({color: 0x99ccff, size: 1.2, blending: THREE.AdditiveBlending}));
-            scene.add(heart);
-
-            camera.position.z = 60;
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 8 + 6;
+                this.speedY = Math.random() * 1.5 + 0.8;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.angle = Math.random() * 360;
+                this.spin = Math.random() * 0.02 - 0.01;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.color = Math.random() > 0.5 ? '#e91e63' : '#ff4081';
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.y * 0.02) * 0.5;
+                this.angle += this.spin;
+                if (this.y > canvas.height + 20) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
         }
 
-        // Ejecutar preparación al cargar la página
-        prepararUniverso3D();
-
-        function animar3D() {
-            if (!animacionCorriendo) return;
-            requestAnimationFrame(animar3D);
-            stars.rotation.y += 0.0005;
-            heart.rotation.y += 0.005;
-            renderer.render(scene, camera);
+        for (let i = 0; i < numPetals; i++) {
+            petals.push(new Petal());
+            petals[i].y = Math.random() * canvas.height; // Distribuidos al inicio
         }
 
-        // 2. EL CLIC AHORA ES LIGERO
-        btnEntrar.addEventListener('click', () => {
-            // Reproducir música (operación ligera porque ya está precargada)
-            musica.play().catch(e => console.log("Audio esperando interacción"));
-            
-            // Iniciar desvanecimiento del menú
-            const landing = document.getElementById('landing');
-            landing.style.opacity = '0';
-            
-            // Retrasar el inicio del 3D unos milisegundos para que la pantalla no se congele durante el clic
-            setTimeout(() => {
-                landing.style.display = 'none';
-                container.style.opacity = '1';
-                animacionCorriendo = true;
-                animar3D(); // Arranca el movimiento de las estrellas
-            }, 800);
-
-            // Mostrar fotos y frases de forma secuencial y limpia
-            document.querySelectorAll('.foto-flotante, .frase-flotante').forEach((el, i) => {
-                setTimeout(() => { 
-                    el.style.opacity = '0.8'; 
-                }, 1200 + (i * 400));
+        function animatePetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            petals.forEach(p => {
+                p.update();
+                p.draw();
             });
+            requestAnimationFrame(animatePetals);
+        }
+        animatePetals();
+
+        // --- 2. VERSOS POÉTICOS ---
+        const poemas = [
+            "Entre pétalos de carmesí y susurros de calma, cada latido encuentra su refugio constante.",
+            "Hay rosas que florecen sin prisa, recordando que la paciencia es la forma más pura de cuidar.",
+            "Ser el norte y la quietud cuando el mundo entero decide hacer ruido.",
+            "Un jardín secreto sembrado de pequeños momentos, miradas y certezas.",
+            "El tiempo se detiene suavemente cuando el alma descansa en buena compañía."
+        ];
+
+        let currentPoemIndex = 0;
+        const poemTextEl = document.getElementById('poemText');
+        const nextBtn = document.getElementById('nextBtn');
+
+        nextBtn.addEventListener('click', () => {
+            poemTextEl.style.opacity = 0;
+            setTimeout(() => {
+                currentPoemIndex = (currentPoemIndex + 1) % poemas.length;
+                poemTextEl.textContent = poemas[currentPoemIndex];
+                poemTextEl.style.opacity = 1;
+            }, 300);
         });
 
-        // Asegurar que el 3D no se deforme si se gira el celular o se cambia tamaño de ventana
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        // --- 3. AUDIO SINTÉTICO (WEB AUDIO API) ---
+        const playBtn = document.getElementById('playBtn');
+        const roseIcon = document.getElementById('roseIcon');
+        let audioCtx = null;
+
+        function playMelody() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            roseIcon.classList.add('active');
+            setTimeout(() => roseIcon.classList.remove('active'), 2500);
+
+            // Notas relajantes estilo caja de música (Frecuencias en Hz)
+            const notes = [329.63, 392.00, 440.00, 493.88, 587.33, 659.25];
+            const now = audioCtx.currentTime;
+
+            notes.forEach((freq, index) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + index * 0.4);
+
+                // Envolvente suave (Fade in / Fade out)
+                gain.gain.setValueAtTime(0, now + index * 0.4);
+                gain.gain.linearRampToValueAtTime(0.15, now + index * 0.4 + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.4 + 1.2);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now + index * 0.4);
+                osc.stop(now + index * 0.4 + 1.5);
+            });
+
+            // Cambiar de verso automáticamente al reproducir
+            nextBtn.click();
+        }
+
+        playBtn.addEventListener('click', playMelody);
     </script>
 </body>
 </html>
