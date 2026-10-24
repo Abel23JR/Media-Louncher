@@ -1,274 +1,748 @@
+html
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algo de Rosas y Amor</title>
+    <title>Felices 11 Meses, Mi Amor ❤️</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        romantic: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            800: '#9f1239',
+                            900: '#4c0519',
+                            gold: '#fbbf24',
+                            dark: '#0f0814'
+                        }
+                    },
+                    fontFamily: {
+                        cursive: ['"Dancing Script"', 'cursive'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Animaciones personalizadas */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 30px rgba(244, 63, 94, 0.8); transform: scale(1.03); }
         }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes wave {
+            0%, 100% { height: 6px; }
+            50% { height: 22px; }
+        }
+        .animate-pulse-glow { animation: pulseGlow 3s infinite ease-in-out; }
+        .animate-float { animation: float 4s infinite ease-in-out; }
+        
+        /* Animación de ondas de audio */
+        .bar-1 { animation: wave 1.2s infinite ease-in-out 0.1s; }
+        .bar-2 { animation: wave 1.2s infinite ease-in-out 0.3s; }
+        .bar-3 { animation: wave 1.2s infinite ease-in-out 0.2s; }
+        .bar-4 { animation: wave 1.2s infinite ease-in-out 0.4s; }
 
-        body {
-            background: radial-gradient(circle at center, #2c0b14 0%, #120408 100%);
-            color: #fce4ec;
-            font-family: 'Georgia', serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+        /* Estilos de la Carta y Sobre */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+        .envelope {
             position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        canvas {
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .flap {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
+            right: 0;
+            height: 50%;
+            background: #be123c;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top center;
+            transition: transform 0.6s ease-in-out 0.2s, z-index 0.2s step-end;
+            z-index: 10;
+        }
+        .card-letter {
+            transition: transform 0.8s ease-in-out 0.5s, opacity 0.5s ease;
+        }
+        .envelope.open .card-letter {
+            transform: translateY(-80px) scale(1.02);
+            z-index: 20;
         }
 
-        .container {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            background: rgba(30, 8, 14, 0.75);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(229, 57, 53, 0.3);
-            border: 1px solid rgba(233, 30, 99, 0.3);
-            max-width: 500px;
-            width: 90%;
-            backdrop-filter: blur(5px);
+        /* Glassmorphism backdrop */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .rose-container {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px auto;
-            transition: transform 0.5s ease;
-        }
-
-        .rose-container.active {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 15px rgba(255, 64, 129, 0.8));
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #ff80ab;
-            font-weight: normal;
-            letter-spacing: 1px;
-        }
-
-        .poem-box {
-            font-style: italic;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            min-height: 80px;
-            margin-bottom: 25px;
-            color: #f8bbd0;
-            transition: opacity 0.5s ease;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        button {
-            background: linear-gradient(135deg, #c2185b, #e91e63);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
-            transition: all 0.3s ease;
-            font-family: 'Georgia', serif;
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, #d81b60, #f06292);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0814; }
+        ::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 4px; }
     </style>
 </head>
-<body>
+<body class="bg-romantic-dark text-slate-100 font-sans min-h-screen overflow-x-hidden selection:bg-romantic-500 selection:text-white">
 
-    <!-- Canvas para la lluvia de pétalos -->
-    <canvas id="petalsCanvas"></canvas>
+    <!-- Canvas de Estrellas y Corazones Flotantes de Fondo -->
+    <canvas id="bgCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-    <div class="container">
-        <!-- Rosa SVG Interactiva -->
-        <div class="rose-container" id="roseIcon">
-            <svg viewBox="0 0 100 100" width="100%" height="100%">
-                <path d="M50 90 C 50 70, 30 50, 30 35 C 30 20, 45 15, 50 30 C 55 15, 70 20, 70 35 C 70 50, 50 70, 50 90 Z" fill="#c2185b" />
-                <path d="M50 85 C 45 65, 65 45, 60 30 C 55 20, 48 25, 50 35 C 52 25, 45 20, 40 30 C 35 45, 55 65, 50 85 Z" fill="#e91e63" />
-                <path d="M50 40 C 42 35, 40 45, 50 50 C 60 45, 58 35, 50 40 Z" fill="#ff80ab" />
-                <path d="M48 70 Q 40 65, 35 70 Q 45 80, 48 70 Z" fill="#4caf50" />
-                <path d="M52 70 Q 60 65, 65 70 Q 55 80, 52 70 Z" fill="#4caf50" />
-            </svg>
-        </div>
-
-        <h1>Algo de Rosas y Amor</h1>
-        
-        <div class="poem-box" id="poemText">
-            Haz clic en reproducir para escuchar la melodía y descubrir un verso...
-        </div>
-
-        <div class="btn-group">
-            <button id="playBtn">✨ Reproducer Melodía</button>
-            <button id="nextBtn">🌹 Otro Verso</button>
+    <!-- PANTALLA INTRODUCCIÓN CINE -->
+    <div id="introScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-black via-romantic-dark to-black transition-opacity duration-1000">
+        <div class="text-center max-w-2xl mx-auto space-y-6 z-10">
+            <div class="inline-block p-3 rounded-full bg-romantic-500/10 border border-romantic-500/30 mb-2 animate-float">
+                <i class="fa-solid font-bold text-3xl text-romantic-500 fa-heart"></i>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-rose-400 to-amber-200">
+                11 Meses Junto a Ti
+            </h1>
+            <p class="text-slate-300 text-lg md:text-xl font-light leading-relaxed">
+                Cada segundo a tu lado ha sido una hermosa aventura. He preparado esta pequeña sorpresa espacial para recordar nuestros mejores momentos.
+            </p>
+            <div class="pt-6">
+                <button id="startBtn" onclick="startExperience()" class="animate-pulse-glow group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-romantic-600 to-rose-500 text-white text-lg font-semibold rounded-full shadow-2xl hover:brightness-110 active:scale-95 transition-all duration-300">
+                    <span>Iniciar Nuestra Historia</span>
+                    <i class="fa-solid fa-sparkles text-amber-300 group-hover:rotate-12 transition-transform"></i>
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- REPRODUCTOR DE MÚSICA FLOTANTE (AUDIO DE FONDO) -->
+    <div id="musicPlayer" class="fixed bottom-4 right-4 z-40 transition-all duration-500 opacity-0 translate-y-10">
+        <div class="glass-card p-3 md:p-4 rounded-2xl flex items-center gap-3 shadow-2xl border border-rose-500/30">
+            <button id="playPauseBtn" onclick="toggleMainAudio()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-romantic-600 to-rose-500 flex items-center justify-center text-white shadow-lg hover:scale-105 active:scale-95 transition-all">
+                <i id="playIcon" class="fa-solid fa-play ml-0.5"></i>
+            </button>
+            
+            <div class="hidden sm:block">
+                <div class="text-xs font-semibold text-rose-300 tracking-wider uppercase">Canción de Fondo</div>
+                <div class="text-sm font-bold text-white truncate max-w-[140px]" id="songTitle">Nuestra Melodía</div>
+            </div>
+
+            <!-- Animación de ondas musicales -->
+            <div id="waveContainer" class="flex items-end gap-1 h-6 px-2 hidden">
+                <span class="w-1 bg-rose-400 rounded-full bar-1"></span>
+                <span class="w-1 bg-rose-400 rounded-full bar-2"></span>
+                <span class="w-1 bg-rose-400 rounded-full bar-3"></span>
+                <span class="w-1 bg-rose-400 rounded-full bar-4"></span>
+            </div>
+
+            <!-- Control de Volumen -->
+            <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                <i class="fa-solid fa-volume-high text-xs text-slate-400"></i>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.7" oninput="changeVolume(this.value)" class="w-16 accent-rose-500 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÓN DE CONFIGURACIÓN / MODO EDICIÓN -->
+    <button onclick="openConfigModal()" class="fixed top-4 right-4 z-40 w-10 h-10 rounded-full glass-card flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all shadow-lg" title="Configurar Enlaces Cloudinary">
+        <i class="fa-solid fa-gear"></i>
+    </button>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="relative z-10 max-w-6xl mx-auto px-4 py-12 space-y-20">
+
+        <!-- HEADER BANNER -->
+        <header class="text-center space-y-4 pt-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm font-semibold tracking-wide uppercase">
+                Capítulo especial: 11 Meses
+            </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-400 to-amber-200">
+                Nuestros Momentos Inolvidables
+            </h1>
+            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                11 meses creando recuerdos juntos. Un recorrido por las sonrisas, viajes, canciones y risas que han marcado nuestro camino.
+            </p>
+        </header>
+
+        <!-- SECCIÓN 1: GALERÍA DE RECUERDOS (FOTOS Y VIDEOS) -->
+        <section class="space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-photo-film text-rose-500"></i> Galería de Recuerdos
+                    </h2>
+                    <p class="text-slate-400 text-sm">Haz clic en cualquier imagen o video para ver en pantalla completa</p>
+                </div>
+            </div>
+
+            <!-- Grid de Galería -->
+            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se llena dinámicamente mediante JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: AUDIOS DE VOZ / NOTAS DE AMOR -->
+        <section class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-microphone-lines text-amber-400"></i> Notas de Voz Especiales
+                </h2>
+                <p class="text-slate-400 text-sm">Presiona para escuchar mensajes dedicados especialmente para ti</p>
+            </div>
+
+            <!-- Contenedor de Notas de Voz -->
+            <div id="audioNotesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+                <!-- Se llena dinámicamente mediante JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: CARTA SURPRESA 11 MESES -->
+        <section class="space-y-8 pt-8">
+            <div class="text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-white">Una Carta Para Ti ❤️</h2>
+                <p class="text-slate-400 text-sm mt-1">Toca el sobre para descubrir mi mensaje especial</p>
+            </div>
+
+            <div class="flex justify-center items-center py-10">
+                <div class="envelope-wrapper w-full max-w-md">
+                    <div id="envelope" onclick="toggleEnvelope()" class="envelope bg-rose-900 border border-rose-700/50 rounded-b-xl shadow-2xl cursor-pointer p-6 relative min-h-[260px] flex flex-col justify-end overflow-visible">
+                        <div class="flap"></div>
+                        
+                        <!-- Sello de Corazón -->
+                        <div id="envelopeSeal" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-gradient-to-tr from-amber-400 to-amber-200 rounded-full flex items-center justify-center shadow-lg border-2 border-white/40 transition-transform hover:scale-110">
+                            <i class="fa-solid fa-heart text-rose-700 text-2xl"></i>
+                        </div>
+
+                        <!-- Carta Desplegable -->
+                        <div id="cardLetter" class="card-letter glass-card-light text-slate-800 p-6 md:p-8 rounded-2xl shadow-2xl space-y-4">
+                            <div class="flex justify-between items-center border-b border-rose-200 pb-3">
+                                <span class="font-cursive text-2xl text-rose-600 font-bold">Felices 11 Meses</span>
+                                <span class="text-xs font-semibold text-rose-400">11 Meses Juntos</span>
+                            </div>
+                            <div id="letterContent" class="space-y-3 font-sans text-sm md:text-base text-slate-700 leading-relaxed max-h-[300px] overflow-y-auto pr-2">
+                                <!-- El texto de la carta se carga dinámicamente -->
+                            </div>
+                            <div class="text-right pt-2 border-t border-rose-100 font-cursive text-xl text-rose-600 font-bold" id="letterSignature">
+                                Con todo mi amor
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-8 text-slate-500 text-sm border-t border-white/5 space-y-2">
+            <p>Hecho con mucho ❤️ para celebrar nuestros 11 meses de puro amor.</p>
+            <p class="text-xs text-slate-600">Creado para ti.</p>
+        </footer>
+    </main>
+
+    <!-- MODAL DE VISUALIZACIÓN MULTIMEDIA (IMÁGENES / VIDEOS) -->
+    <div id="mediaModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity">
+        <button onclick="closeMediaModal()" class="absolute top-4 right-4 z-50 text-white/70 hover:text-white text-3xl transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="max-w-4xl w-full max-h-[90vh] flex flex-col items-center justify-center relative">
+            <div id="modalContent" class="w-full flex justify-center items-center rounded-2xl overflow-hidden shadow-2xl">
+                <!-- Se inserta imagen o video según el caso -->
+            </div>
+            <p id="modalCaption" class="mt-4 text-center text-slate-200 text-base md:text-lg font-medium"></p>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN DE ENLACES (CONFIGURADOR CLOUDINARY) -->
+    <div id="configModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card-light text-slate-900 w-full max-w-2xl rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-rose-600"></i> Personalizar Contenido
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-500 mb-6">
+                Aquí puedes pegar las URLs de tus fotos, videos y audios subidos a <strong class="text-rose-600">Cloudinary</strong> o cualquier otro servidor directo. 
+            </p>
+
+            <form id="configForm" onsubmit="saveConfiguration(event)" class="space-y-6">
+                <!-- Audio Principal de Fondo -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">Audio de Fondo (Música Romántica)</label>
+                    <input type="text" id="cfgBgAudio" class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="URL mp3 de Cloudinary">
+                </div>
+
+                <!-- Galería Items (JSON o Inputs dinámicos simples) -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700">Elementos de Galería (Fotos / Videos Cloudinary)</label>
+                    <div id="galleryInputs" class="space-y-3">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Notas de Voz -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700">Audios de Voz Dedicados</label>
+                    <div id="audioInputs" class="space-y-3">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Texto de Carta -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">Mensaje de la Carta de Amor</label>
+                    <textarea id="cfgLetterText" rows="4" class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Escribe tu mensaje..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="resetToDefaults()" class="px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                        Restablecer Ejemplo
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-rose-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-rose-700 transition-colors">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENTS OCULTOS PARA CONTROL -->
+    <audio id="bgAudioLoop" loop preload="auto"></audio>
+    <audio id="voiceNoteAudio" preload="auto"></audio>
+
+    <!-- JAVASCRIPT PRINCIPAL -->
     <script>
-        // --- 1. LLUVIA DE PÉTALOS (CANVAS) ---
-        const canvas = document.getElementById('petalsCanvas');
-        const ctx = canvas.getContext('2d');
+        // CONFIGURACIÓN PREDETERMINADA CON RECURSOS DE DEMOSTRACIÓN DUAL (IMÁGENES/VIDEOS/AUDIOS)
+        const DEFAULT_CONFIG = {
+            bgAudio: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112189.mp3",
+            gallery: [
+                {
+                    type: "image",
+                    url: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80",
+                    caption: "Nuestra primera cita inolvidable ❤️"
+                },
+                {
+                    type: "video",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    caption: "Aquel viaje hermoso juntos 🌅"
+                },
+                {
+                    type: "image",
+                    url: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80",
+                    caption: "Siempre sonriendo a tu lado 😊"
+                },
+                {
+                    type: "image",
+                    url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80",
+                    caption: "Un atardecer mágico juntos ✨"
+                },
+                {
+                    type: "video",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                    caption: "Risas y momentos locos 💖"
+                },
+                {
+                    type: "image",
+                    url: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=800&q=80",
+                    caption: "Celebrando cada logro juntos 🥂"
+                }
+            ],
+            audioNotes: [
+                {
+                    title: "Escúchame un momento 🎙️",
+                    subtitle: "Un pequeño mensaje para ti",
+                    url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73220.mp3?filename=gentle-ocean-waves-birdsong-and-gull-10620.mp3"
+                },
+                {
+                    title: "Lo que siento por ti ❤️",
+                    subtitle: "Lo que guardo en mi corazón",
+                    url: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=acoustic-guitar-loop-f-9108.mp3"
+                }
+            ],
+            letterText: "Mi amor,\n\nHoy cumplimos 11 meses recorriendo este camino juntos y no puedo evitar sonreír al recordar todo lo que hemos vivido. Cada día a tu lado me confirma que haberte conocido ha sido una de las mejores cosas de mi vida.\n\nGracias por tus abrazos sinceros, por escuchar mis días difíciles, por reírte conmigo y por llenar mi mundo de luz y calidez. Estos 11 meses son solo el comienzo de todo lo que aún nos falta por construir y celebrar.\n\nTe amo con todo mi corazón.",
+            signature: "Para mi persona favorita ❤️"
+        };
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        let appConfig = JSON.parse(localStorage.getItem('romantic_app_config')) || DEFAULT_CONFIG;
+        let isMainAudioPlaying = false;
+        let currentActiveVoiceBtn = null;
+
+        // INICIALIZACIÓN
+        window.onload = () => {
+            initCanvas();
+            loadAppContent();
+        };
+
+        // CARGAR CONTENIDO EN EL DOM
+        function loadAppContent() {
+            // Audio principal
+            const bgAudio = document.getElementById('bgAudioLoop');
+            bgAudio.src = appConfig.bgAudio;
+
+            // Render Galería
+            const galleryGrid = document.getElementById('galleryGrid');
+            galleryGrid.innerHTML = '';
+            appConfig.gallery.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "group relative rounded-2xl overflow-hidden glass-card cursor-pointer transform hover:-translate-y-2 hover:shadow-2xl transition-all duration-300";
+                card.onclick = () => openMediaModal(item);
+
+                if(item.type === 'image') {
+                    card.innerHTML = `
+                        <div class="aspect-square w-full overflow-hidden relative">
+                            <img src="${item.url}" alt="Recuerdo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x600/be123c/ffffff?text=Foto+de+Amor'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                <p class="text-white text-sm font-medium leading-snug">${item.caption}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="aspect-square w-full overflow-hidden relative bg-black flex items-center justify-center">
+                            <video src="${item.url}" class="w-full h-full object-cover opacity-80" muted></video>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-rose-600/90 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </div>
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                <p class="text-white text-sm font-medium leading-snug">${item.caption}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                galleryGrid.appendChild(card);
+            });
+
+            // Render Audios de Voz
+            const audioContainer = document.getElementById('audioNotesContainer');
+            audioContainer.innerHTML = '';
+            appConfig.audioNotes.forEach((note, index) => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-4 rounded-2xl flex items-center justify-between gap-4 border border-white/10 hover:border-rose-500/40 transition-all";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <button onclick="playVoiceNote('${note.url}', this)" class="voice-btn w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 flex items-center justify-center text-white shadow-md hover:scale-105 active:scale-95 transition-all">
+                            <i class="fa-solid fa-play ml-0.5"></i>
+                        </button>
+                        <div>
+                            <h4 class="font-bold text-white text-base">${note.title}</h4>
+                            <p class="text-xs text-slate-400">${note.subtitle}</p>
+                        </div>
+                    </div>
+                    <div class="text-rose-400 text-xs font-semibold px-3 py-1 rounded-full bg-rose-500/10">
+                        <i class="fa-solid fa-volume-high mr-1"></i> Audio
+                    </div>
+                `;
+                audioContainer.appendChild(card);
+            });
+
+            // Render Carta
+            document.getElementById('letterContent').innerText = appConfig.letterText;
+            document.getElementById('letterSignature').innerText = appConfig.signature || "Con todo mi amor";
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
 
-        const petals = [];
-        const numPetals = 35;
+        // INICIAR EXPERIENCIA (INTRO)
+        function startExperience() {
+            const intro = document.getElementById('introScreen');
+            const player = document.getElementById('musicPlayer');
+            
+            intro.classList.add('opacity-0');
+            setTimeout(() => {
+                intro.style.display = 'none';
+                player.classList.remove('opacity-0', 'translate-y-10');
+            }, 1000);
 
-        class Petal {
-            constructor() {
-                this.reset();
+            // Iniciar Audio de Fondo
+            toggleMainAudio(true);
+        }
+
+        // CONTROL DE MÚSICA PRINCIPAL
+        function toggleMainAudio(forcePlay = false) {
+            const bgAudio = document.getElementById('bgAudioLoop');
+            const playIcon = document.getElementById('playIcon');
+            const waveContainer = document.getElementById('waveContainer');
+
+            // Pausar audio de voz si se reproduce la música
+            pauseVoiceNote();
+
+            if (forcePlay || bgAudio.paused) {
+                bgAudio.play().then(() => {
+                    isMainAudioPlaying = true;
+                    playIcon.className = "fa-solid fa-pause";
+                    waveContainer.classList.remove('hidden');
+                }).catch(e => console.log("Auto-play prevenido:", e));
+            } else {
+                bgAudio.pause();
+                isMainAudioPlaying = false;
+                playIcon.className = "fa-solid fa-play ml-0.5";
+                waveContainer.classList.add('hidden');
             }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = -20;
-                this.size = Math.random() * 8 + 6;
-                this.speedY = Math.random() * 1.5 + 0.8;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.angle = Math.random() * 360;
-                this.spin = Math.random() * 0.02 - 0.01;
-                this.opacity = Math.random() * 0.5 + 0.3;
-                this.color = Math.random() > 0.5 ? '#e91e63' : '#ff4081';
+        }
+
+        function changeVolume(val) {
+            document.getElementById('bgAudioLoop').volume = val;
+            document.getElementById('voiceNoteAudio').volume = val;
+        }
+
+        // CONTROL DE NOTAS DE VOZ DEDICADAS
+        function playVoiceNote(url, btn) {
+            const voiceAudio = document.getElementById('voiceNoteAudio');
+            const bgAudio = document.getElementById('bgAudioLoop');
+
+            // Si se presiona el botón activo actualmente
+            if (currentActiveVoiceBtn === btn && !voiceAudio.paused) {
+                voiceAudio.pause();
+                resetVoiceBtnState(btn);
+                return;
             }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX + Math.sin(this.y * 0.02) * 0.5;
-                this.angle += this.spin;
-                if (this.y > canvas.height + 20) {
-                    this.reset();
+
+            // Restaurar botón previo si existía
+            if (currentActiveVoiceBtn) {
+                resetVoiceBtnState(currentActiveVoiceBtn);
+            }
+
+            // Pausar música de fondo mientras habla la nota de voz
+            if (!bgAudio.paused) {
+                bgAudio.pause();
+                document.getElementById('playIcon').className = "fa-solid fa-play ml-0.5";
+                document.getElementById('waveContainer').classList.add('hidden');
+            }
+
+            voiceAudio.src = url;
+            voiceAudio.play();
+            currentActiveVoiceBtn = btn;
+
+            // Cambiar icono del botón activo
+            btn.querySelector('i').className = "fa-solid fa-pause";
+            btn.classList.add('ring-4', 'ring-rose-500/50');
+
+            voiceAudio.onended = () => {
+                resetVoiceBtnState(btn);
+                // Reanudar música de fondo si estaba activa
+                if (isMainAudioPlaying) {
+                    toggleMainAudio(true);
+                }
+            };
+        }
+
+        function pauseVoiceNote() {
+            const voiceAudio = document.getElementById('voiceNoteAudio');
+            if (!voiceAudio.paused) {
+                voiceAudio.pause();
+                if (currentActiveVoiceBtn) {
+                    resetVoiceBtnState(currentActiveVoiceBtn);
                 }
             }
-            draw() {
+        }
+
+        function resetVoiceBtnState(btn) {
+            btn.querySelector('i').className = "fa-solid fa-play ml-0.5";
+            btn.classList.remove('ring-4', 'ring-rose-500/50');
+            currentActiveVoiceBtn = null;
+        }
+
+        // CONTROL DE CARTA Y SOBRE
+        function toggleEnvelope() {
+            const envelope = document.getElementById('envelope');
+            envelope.classList.toggle('open');
+        }
+
+        // MODAL MULTIMEDIA (FOTOS / VIDEOS)
+        function openMediaModal(item) {
+            const modal = document.getElementById('mediaModal');
+            const modalContent = document.getElementById('modalContent');
+            const caption = document.getElementById('modalCaption');
+
+            modalContent.innerHTML = '';
+            caption.innerText = item.caption || '';
+
+            if (item.type === 'image') {
+                modalContent.innerHTML = `<img src="${item.url}" class="max-h-[75vh] w-auto object-contain rounded-xl shadow-2xl">`;
+            } else {
+                modalContent.innerHTML = `<video src="${item.url}" controls autoplay class="max-h-[75vh] w-auto rounded-xl shadow-2xl"></video>`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeMediaModal() {
+            const modal = document.getElementById('mediaModal');
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = ''; // Detener video al cerrar
+            modal.classList.add('hidden');
+        }
+
+        // MODAL DE CONFIGURACIÓN
+        function openConfigModal() {
+            document.getElementById('cfgBgAudio').value = appConfig.bgAudio;
+            document.getElementById('cfgLetterText').value = appConfig.letterText;
+
+            // Inputs para Galería
+            const gInputs = document.getElementById('galleryInputs');
+            gInputs.innerHTML = '';
+            appConfig.gallery.forEach((item, idx) => {
+                gInputs.innerHTML += `
+                    <div class="p-3 bg-slate-100 rounded-lg space-y-2 border border-slate-200">
+                        <div class="flex gap-2">
+                            <select id="cfgType_${idx}" class="text-xs p-1.5 border rounded bg-white font-semibold">
+                                <option value="image" ${item.type === 'image' ? 'selected' : ''}>Imagen</option>
+                                <option value="video" ${item.type === 'video' ? 'selected' : ''}>Video</option>
+                            </select>
+                            <input type="text" id="cfgUrl_${idx}" value="${item.url}" placeholder="URL Cloudinary" class="flex-1 text-xs p-1.5 border rounded bg-white">
+                        </div>
+                        <input type="text" id="cfgCap_${idx}" value="${item.caption}" placeholder="Descripción corta" class="w-full text-xs p-1.5 border rounded bg-white">
+                    </div>
+                `;
+            });
+
+            // Inputs para Audios
+            const aInputs = document.getElementById('audioInputs');
+            aInputs.innerHTML = '';
+            appConfig.audioNotes.forEach((note, idx) => {
+                aInputs.innerHTML += `
+                    <div class="p-3 bg-slate-100 rounded-lg space-y-2 border border-slate-200">
+                        <input type="text" id="cfgAudioTitle_${idx}" value="${note.title}" placeholder="Título del audio" class="w-full text-xs p-1.5 border rounded bg-white font-bold">
+                        <input type="text" id="cfgAudioUrl_${idx}" value="${note.url}" placeholder="URL mp3 de Cloudinary" class="w-full text-xs p-1.5 border rounded bg-white">
+                    </div>
+                `;
+            });
+
+            document.getElementById('configModal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.add('hidden');
+        }
+
+        function saveConfiguration(e) {
+            e.preventDefault();
+
+            appConfig.bgAudio = document.getElementById('cfgBgAudio').value;
+            appConfig.letterText = document.getElementById('cfgLetterText').value;
+
+            // Guardar Galería
+            appConfig.gallery.forEach((_, idx) => {
+                appConfig.gallery[idx].type = document.getElementById(`cfgType_${idx}`).value;
+                appConfig.gallery[idx].url = document.getElementById(`cfgUrl_${idx}`).value;
+                appConfig.gallery[idx].caption = document.getElementById(`cfgCap_${idx}`).value;
+            });
+
+            // Guardar Audios
+            appConfig.audioNotes.forEach((_, idx) => {
+                appConfig.audioNotes[idx].title = document.getElementById(`cfgAudioTitle_${idx}`).value;
+                appConfig.audioNotes[idx].url = document.getElementById(`cfgAudioUrl_${idx}`).value;
+            });
+
+            // Guardar en LocalStorage
+            localStorage.setItem('romantic_app_config', JSON.stringify(appConfig));
+
+            closeConfigModal();
+            loadAppContent();
+        }
+
+        function resetToDefaults() {
+            if (confirm("¿Deseas restablecer los datos de ejemplo predeterminados?")) {
+                appConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+                localStorage.removeItem('romantic_app_config');
+                closeConfigModal();
+                loadAppContent();
+            }
+        }
+
+        // CANVAS DE PARTICULAS Y CORAZONES FLOTANTES
+        function initCanvas() {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const particles = [];
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 12 + 6,
+                    speedY: Math.random() * 0.8 + 0.2,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.2,
+                    isHeart: Math.random() > 0.4
+                });
+            }
+
+            function drawHeart(x, y, size, opacity) {
                 ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
-                ctx.fillStyle = this.color;
-                ctx.globalAlpha = this.opacity;
                 ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(244, 63, 94, ${opacity})`;
+                const topCurveHeight = size * 0.3;
+                ctx.moveTo(x, y + topCurveHeight);
+                ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + topCurveHeight);
+                ctx.bezierCurveTo(x - size / 2, y + (size + topCurveHeight) / 2, x, y + size, x, y + size);
+                ctx.bezierCurveTo(x, y + size, x + size / 2, y + (size + topCurveHeight) / 2, x + size / 2, y + topCurveHeight);
+                ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + topCurveHeight);
+                ctx.closePath();
                 ctx.fill();
                 ctx.restore();
             }
-        }
 
-        for (let i = 0; i < numPetals; i++) {
-            petals.push(new Petal());
-            petals[i].y = Math.random() * canvas.height; // Distribuidos al inicio
-        }
+            function animateCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        function animatePetals() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            petals.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animatePetals);
-        }
-        animatePetals();
+                particles.forEach(p => {
+                    p.y -= p.speedY;
+                    p.x += p.speedX;
 
-        // --- 2. VERSOS POÉTICOS ---
-        const poemas = [
-            "Entre pétalos de carmesí y susurros de calma, cada latido encuentra su refugio constante.",
-            "Hay rosas que florecen sin prisa, recordando que la paciencia es la forma más pura de cuidar.",
-            "Ser el norte y la quietud cuando el mundo entero decide hacer ruido.",
-            "Un jardín secreto sembrado de pequeños momentos, miradas y certezas.",
-            "El tiempo se detiene suavemente cuando el alma descansa en buena compañía."
-        ];
+                    if (p.y < -20) {
+                        p.y = canvas.height + 20;
+                        p.x = Math.random() * canvas.width;
+                    }
 
-        let currentPoemIndex = 0;
-        const poemTextEl = document.getElementById('poemText');
-        const nextBtn = document.getElementById('nextBtn');
+                    if (p.isHeart) {
+                        drawHeart(p.x, p.y, p.size, p.opacity);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size / 4, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(251, 191, 36, ${p.opacity})`;
+                        ctx.fill();
+                    }
+                });
 
-        nextBtn.addEventListener('click', () => {
-            poemTextEl.style.opacity = 0;
-            setTimeout(() => {
-                currentPoemIndex = (currentPoemIndex + 1) % poemas.length;
-                poemTextEl.textContent = poemas[currentPoemIndex];
-                poemTextEl.style.opacity = 1;
-            }, 300);
-        });
-
-        // --- 3. AUDIO SINTÉTICO (WEB AUDIO API) ---
-        const playBtn = document.getElementById('playBtn');
-        const roseIcon = document.getElementById('roseIcon');
-        let audioCtx = null;
-
-        function playMelody() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                requestAnimationFrame(animateCanvas);
             }
 
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            roseIcon.classList.add('active');
-            setTimeout(() => roseIcon.classList.remove('active'), 2500);
-
-            // Notas relajantes estilo caja de música (Frecuencias en Hz)
-            const notes = [329.63, 392.00, 440.00, 493.88, 587.33, 659.25];
-            const now = audioCtx.currentTime;
-
-            notes.forEach((freq, index) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, now + index * 0.4);
-
-                // Envolvente suave (Fade in / Fade out)
-                gain.gain.setValueAtTime(0, now + index * 0.4);
-                gain.gain.linearRampToValueAtTime(0.15, now + index * 0.4 + 0.1);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.4 + 1.2);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start(now + index * 0.4);
-                osc.stop(now + index * 0.4 + 1.5);
-            });
-
-            // Cambiar de verso automáticamente al reproducir
-            nextBtn.click();
+            animateCanvas();
         }
-
-        playBtn.addEventListener('click', playMelody);
     </script>
 </body>
 </html>
