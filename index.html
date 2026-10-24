@@ -1,595 +1,798 @@
+html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nuestros 11 Meses Juntos ❤️</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-dark: #0a0510;
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --card-border: rgba(255, 182, 193, 0.2);
-      --primary: #ff4b72;
-      --primary-glow: rgba(255, 75, 114, 0.4);
-      --accent: #ffb6c1;
-      --text-light: #f8fafc;
-      --text-muted: #cbd5e1;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felices 11 Meses, Mi Amor ❤️</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        romantic: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            800: '#9f1239',
+                            900: '#4c0519',
+                            gold: '#fbbf24',
+                            dark: '#0f0814'
+                        }
+                    },
+                    fontFamily: {
+                        cursive: ['"Dancing Script"', 'cursive'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Animaciones personalizadas */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 30px rgba(244, 63, 94, 0.8); transform: scale(1.03); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes wave {
+            0%, 100% { height: 6px; }
+            50% { height: 22px; }
+        }
+        .animate-pulse-glow { animation: pulseGlow 3s infinite ease-in-out; }
+        .animate-float { animation: float 4s infinite ease-in-out; }
+        
+        /* Animación de ondas de audio */
+        .bar-1 { animation: wave 1.2s infinite ease-in-out 0.1s; }
+        .bar-2 { animation: wave 1.2s infinite ease-in-out 0.3s; }
+        .bar-3 { animation: wave 1.2s infinite ease-in-out 0.2s; }
+        .bar-4 { animation: wave 1.2s infinite ease-in-out 0.4s; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        /* Estilos de la Carta y Sobre */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+        .envelope {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: #be123c;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top center;
+            transition: transform 0.6s ease-in-out 0.2s, z-index 0.2s step-end;
+            z-index: 10;
+        }
+        .card-letter {
+            transition: transform 0.8s ease-in-out 0.5s, opacity 0.5s ease;
+        }
+        .envelope.open .card-letter {
+            transform: translateY(-80px) scale(1.02);
+            z-index: 20;
+        }
 
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-      min-height: 100vh;
-      position: relative;
-    }
+        /* Glassmorphism backdrop */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
 
-    canvas#stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Intro Screen Overlay */
-    #intro-overlay {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center, #1a0928 0%, #05020a 100%);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      transition: opacity 1s ease, visibility 1s ease;
-    }
-
-    #intro-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    .intro-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 3.5rem;
-      color: var(--accent);
-      text-shadow: 0 0 20px var(--primary-glow);
-      margin-bottom: 1rem;
-    }
-
-    .intro-sub {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 500px;
-      margin-bottom: 2.5rem;
-      line-height: 1.6;
-    }
-
-    .btn-start {
-      background: linear-gradient(135deg, #ff4b72, #d92662);
-      color: white;
-      border: none;
-      padding: 1rem 2.5rem;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 0 25px var(--primary-glow);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .btn-start:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 35px var(--primary-glow);
-    }
-
-    /* Main Container */
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 5rem 1.5rem;
-    }
-
-    header {
-      text-align: center;
-      padding: 3rem 0 2rem 0;
-    }
-
-    .badge {
-      display: inline-block;
-      background: rgba(255, 75, 114, 0.15);
-      border: 1px solid var(--primary);
-      color: var(--accent);
-      padding: 0.4rem 1.2rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      letter-spacing: 1px;
-    }
-
-    h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 4rem;
-      background: linear-gradient(135deg, #ffffff, #ffb6c1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Music Player Flotante */
-    .audio-widget {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 100;
-      background: rgba(15, 8, 25, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      padding: 0.8rem 1.2rem;
-      border-radius: 30px;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .music-disc {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background: linear-gradient(45deg, #ff4b72, #333);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: spin 4s linear infinite;
-      animation-play-state: paused;
-    }
-
-    .music-disc.playing {
-      animation-play-state: running;
-    }
-
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-
-    .btn-audio-toggle {
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-    }
-
-    /* Sections */
-    .section-title {
-      font-size: 1.8rem;
-      margin: 3rem 0 1.5rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: var(--accent);
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--card-border), transparent);
-    }
-
-    /* Audios Especiales */
-    .audio-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .audio-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s ease;
-    }
-
-    .audio-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .audio-card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
-
-    .audio-card audio {
-      width: 100%;
-      margin-top: 0.8rem;
-      border-radius: 8px;
-    }
-
-    /* Videos Grid */
-    .videos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-    }
-
-    .video-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .video-card video {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .video-info {
-      padding: 1.2rem;
-    }
-
-    /* Photos Masonry/Grid */
-    .photos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.2rem;
-    }
-
-    .photo-card {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      aspect-ratio: 4/5;
-      border: 1px solid var(--card-border);
-      cursor: pointer;
-      background: var(--card-bg);
-    }
-
-    .photo-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .photo-card:hover img {
-      transform: scale(1.08);
-    }
-
-    /* Modal / Lightbox */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      padding: 2rem;
-    }
-
-    .modal.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-content img {
-      max-width: 90vw;
-      max-height: 85vh;
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(255, 75, 114, 0.3);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      font-size: 2rem;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    /* Love Letter Section */
-    .letter-container {
-      margin-top: 4rem;
-      background: linear-gradient(135deg, rgba(255, 75, 114, 0.1), rgba(255, 182, 193, 0.05));
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 3rem 2rem;
-      text-align: center;
-      position: relative;
-    }
-
-    .letter-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 2.8rem;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-    }
-
-    .letter-body {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: 0 auto 2rem auto;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 4rem;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-  </style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0814; }
+        ::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 4px; }
+    </style>
 </head>
-<body>
+<body class="bg-romantic-dark text-slate-100 font-sans min-h-screen overflow-x-hidden selection:bg-romantic-500 selection:text-white">
 
-  <canvas id="stars"></canvas>
+    <!-- Canvas de Estrellas y Corazones Flotantes de Fondo -->
+    <canvas id="bgCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-  <!-- Pantalla de Inicio / Intro -->
-  <div id="intro-overlay">
-    <div class="badge">11 MESES DE AMOR</div>
-    <h1 class="intro-title">Nuestra Historia</h1>
-    <p class="intro-sub">He preparado este espacio especial con cada uno de nuestros momentos, fotos, videos y recuerdos juntos.</p>
-    <button class="btn-start" onclick="startExperience()">
-      <span>Iniciar Experiencia</span> ❤️
+    <!-- PANTALLA INTRODUCCIÓN CINE -->
+    <div id="introScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-black via-romantic-dark to-black transition-opacity duration-1000">
+        <div class="text-center max-w-2xl mx-auto space-y-6 z-10">
+            <div class="inline-block p-3 rounded-full bg-romantic-500/10 border border-romantic-500/30 mb-2 animate-float">
+                <i class="fa-solid font-bold text-3xl text-romantic-500 fa-heart"></i>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-rose-400 to-amber-200">
+                11 Meses Junto a Ti
+            </h1>
+            <p class="text-slate-300 text-lg md:text-xl font-light leading-relaxed">
+                Cada segundo a tu lado ha sido una hermosa aventura. He preparado esta pequeña sorpresa espacial para recordar nuestros mejores momentos.
+            </p>
+            <div class="pt-6">
+                <button id="startBtn" onclick="startExperience()" class="animate-pulse-glow group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-romantic-600 to-rose-500 text-white text-lg font-semibold rounded-full shadow-2xl hover:brightness-110 active:scale-95 transition-all duration-300">
+                    <span>Iniciar Nuestra Historia</span>
+                    <i class="fa-solid fa-sparkles text-amber-300 group-hover:rotate-12 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPRODUCTOR DE MÚSICA FLOTANTE (AUDIO DE FONDO) -->
+    <div id="musicPlayer" class="fixed bottom-4 right-4 z-40 transition-all duration-500 opacity-0 translate-y-10">
+        <div class="glass-card p-3 md:p-4 rounded-2xl flex items-center gap-3 shadow-2xl border border-rose-500/30">
+            <button id="playPauseBtn" onclick="toggleMainAudio()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-romantic-600 to-rose-500 flex items-center justify-center text-white shadow-lg hover:scale-105 active:scale-95 transition-all">
+                <i id="playIcon" class="fa-solid fa-play ml-0.5"></i>
+            </button>
+            
+            <div class="hidden sm:block">
+                <div class="text-xs font-semibold text-rose-300 tracking-wider uppercase">Canción de Fondo</div>
+                <div class="text-sm font-bold text-white truncate max-w-[140px]" id="songTitle">Nuestra Melodía</div>
+            </div>
+
+            <!-- Animación de ondas musicales -->
+            <div id="waveContainer" class="flex items-end gap-1 h-6 px-2 hidden">
+                <span class="w-1 bg-rose-400 rounded-full bar-1"></span>
+                <span class="w-1 bg-rose-400 rounded-full bar-2"></span>
+                <span class="w-1 bg-rose-400 rounded-full bar-3"></span>
+                <span class="w-1 bg-rose-400 rounded-full bar-4"></span>
+            </div>
+
+            <!-- Control de Volumen -->
+            <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                <i class="fa-solid fa-volume-high text-xs text-slate-400"></i>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.7" oninput="changeVolume(this.value)" class="w-16 accent-rose-500 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÓN DE CONFIGURACIÓN / MODO EDICIÓN -->
+    <button onclick="openConfigModal()" class="fixed top-4 right-4 z-40 w-10 h-10 rounded-full glass-card flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all shadow-lg" title="Configurar Enlaces Cloudinary">
+        <i class="fa-solid fa-gear"></i>
     </button>
-  </div>
 
-  <!-- Reproductor Flotante de Música de Fondo -->
-  <div class="audio-widget">
-    <div class="music-disc" id="musicDisc">🎵</div>
-    <div>
-      <div style="font-size: 0.85rem; font-weight: 600;">Sin Medias Tintas</div>
-      <div style="font-size: 0.7rem; color: var(--text-muted);">Música de fondo</div>
-    </div>
-    <button class="btn-audio-toggle" onclick="toggleMainAudio()" id="bgAudioBtn">⏸️</button>
-  </div>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="relative z-10 max-w-6xl mx-auto px-4 py-12 space-y-20">
 
-  <!-- Audio de Fondo Principal -->
-  <audio id="bgAudio" loop preload="auto">
-    <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792855510/Sin_Medias_Tintas_-_Aurozyz_-_Aurozyz_pfewnm.mp3" type="audio/mp3">
-  </audio>
+        <!-- HEADER BANNER -->
+        <header class="text-center space-y-4 pt-6">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm font-semibold tracking-wide uppercase">
+                Capítulo especial: 11 Meses
+            </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-400 to-amber-200">
+                Nuestros Momentos Inolvidables
+            </h1>
+            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                11 meses creando recuerdos juntos. Un recorrido por las sonrisas, viajes, canciones y risas que han marcado nuestro camino.
+            </p>
+        </header>
 
-  <!-- Contenido Principal -->
-  <div class="container">
-    <header>
-      <div class="badge">24 DE OCTUBRE</div>
-      <h1>Felices 11 Meses</h1>
-      <p style="color: var(--text-muted);">Cada segundo a tu lado cuenta una historia inolvidable</p>
-    </header>
+        <!-- SECCIÓN 1: GALERÍA DE RECUERDOS (FOTOS Y VIDEOS) -->
+        <section class="space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-photo-film text-rose-500"></i> Galería de Recuerdos
+                    </h2>
+                    <p class="text-slate-400 text-sm">Haz clic en cualquier imagen o video para ver en pantalla completa</p>
+                </div>
+            </div>
 
-    <!-- Sección de Notas de Voz -->
-    <h2 class="section-title">🎙️ Mensajes de Voz</h2>
-    <div class="audio-cards">
-      <div class="audio-card">
-        <h3>Un mensaje para ti #1</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">Escucha estas palabras especiales</p>
-        <audio controls preload="metadata" onplay="pauseBgMusic()">
-          <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854687/WhatsApp_Ptt_2026-10-24_at_10.07.31_AM_k3vzpr.ogg" type="audio/ogg">
-        </audio>
-      </div>
+            <!-- Grid de Galería -->
+            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se llena dinámicamente mediante JS -->
+            </div>
+        </section>
 
-      <div class="audio-card">
-        <h3>Un mensaje para ti #2</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">Guardado con mucho amor</p>
-        <audio controls preload="metadata" onplay="pauseBgMusic()">
-          <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854687/WhatsApp_Ptt_2026-10-24_at_10.10.10_AM_u0bwyf.ogg" type="audio/ogg">
-        </audio>
-      </div>
-    </div>
+        <!-- SECCIÓN 2: AUDIOS DE VOZ / NOTAS DE AMOR -->
+        <section class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-microphone-lines text-amber-400"></i> Notas de Voz Especiales
+                </h2>
+                <p class="text-slate-400 text-sm">Presiona para escuchar mensajes dedicados especialmente para ti</p>
+            </div>
 
-    <!-- Sección de Videos -->
-    <h2 class="section-title">🎬 Nuestros Videos</h2>
-    <div class="videos-grid">
-      <div class="video-card">
-        <video controls preload="metadata" onplay="pauseBgMusic()">
-          <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854688/WhatsApp_Video_2026-10-24_at_10.04.12_AM_1_ue7owf.mp4" type="video/mp4">
-        </video>
-        <div class="video-info">
-          <h3 style="font-size: 1.1rem; color: var(--accent);">Momento Especial I</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Recuerdos en movimiento juntos</p>
+            <!-- Contenedor de Notas de Voz -->
+            <div id="audioNotesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+                <!-- Se llena dinámicamente mediante JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: CARTA SURPRESA 11 MESES -->
+        <section class="space-y-8 pt-8">
+            <div class="text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-white">Una Carta Para Ti ❤️</h2>
+                <p class="text-slate-400 text-sm mt-1">Toca el sobre para descubrir mi mensaje especial</p>
+            </div>
+
+            <div class="flex justify-center items-center py-10">
+                <div class="envelope-wrapper w-full max-w-md">
+                    <div id="envelope" onclick="toggleEnvelope()" class="envelope bg-rose-900 border border-rose-700/50 rounded-b-xl shadow-2xl cursor-pointer p-6 relative min-h-[260px] flex flex-col justify-end overflow-visible">
+                        <div class="flap"></div>
+                        
+                        <!-- Sello de Corazón -->
+                        <div id="envelopeSeal" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-gradient-to-tr from-amber-400 to-amber-200 rounded-full flex items-center justify-center shadow-lg border-2 border-white/40 transition-transform hover:scale-110">
+                            <i class="fa-solid fa-heart text-rose-700 text-2xl"></i>
+                        </div>
+
+                        <!-- Carta Desplegable -->
+                        <div id="cardLetter" class="card-letter glass-card-light text-slate-800 p-6 md:p-8 rounded-2xl shadow-2xl space-y-4">
+                            <div class="flex justify-between items-center border-b border-rose-200 pb-3">
+                                <span class="font-cursive text-2xl text-rose-600 font-bold">Felices 11 Meses</span>
+                                <span class="text-xs font-semibold text-rose-400">11 Meses Juntos</span>
+                            </div>
+                            <div id="letterContent" class="space-y-3 font-sans text-sm md:text-base text-slate-700 leading-relaxed max-h-[300px] overflow-y-auto pr-2">
+                                <!-- El texto de la carta se carga dinámicamente -->
+                            </div>
+                            <div class="text-right pt-2 border-t border-rose-100 font-cursive text-xl text-rose-600 font-bold" id="letterSignature">
+                                Con todo mi amor
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-8 text-slate-500 text-sm border-t border-white/5 space-y-2">
+            <p>Hecho con mucho ❤️ para celebrar nuestros 11 meses de puro amor.</p>
+            <p class="text-xs text-slate-600">Creado para ti.</p>
+        </footer>
+    </main>
+
+    <!-- MODAL DE VISUALIZACIÓN MULTIMEDIA (IMÁGENES / VIDEOS) -->
+    <div id="mediaModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity">
+        <button onclick="closeMediaModal()" class="absolute top-4 right-4 z-50 text-white/70 hover:text-white text-3xl transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="max-w-4xl w-full max-h-[90vh] flex flex-col items-center justify-center relative">
+            <div id="modalContent" class="w-full flex justify-center items-center rounded-2xl overflow-hidden shadow-2xl">
+                <!-- Se inserta imagen o video según el caso -->
+            </div>
+            <p id="modalCaption" class="mt-4 text-center text-slate-200 text-base md:text-lg font-medium"></p>
         </div>
-      </div>
+    </div>
 
-      <div class="video-card">
-        <video controls preload="metadata" onplay="pauseBgMusic()">
-          <source src="https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854688/WhatsApp_Video_2026-10-24_at_10.04.12_AM_xe79c3.mp4" type="video/mp4">
-        </video>
-        <div class="video-info">
-          <h3 style="font-size: 1.1rem; color: var(--accent);">Momento Especial II</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Guardando risas y aventuras</p>
+    <!-- MODAL DE CONFIGURACIÓN DE ENLACES (CONFIGURADOR CLOUDINARY) -->
+    <div id="configModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card-light text-slate-900 w-full max-w-2xl rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-rose-600"></i> Personalizar Contenido
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-500 mb-6">
+                Aquí puedes pegar las URLs de tus fotos, videos y audios subidos a <strong class="text-rose-600">Cloudinary</strong> o cualquier otro servidor directo. 
+            </p>
+
+            <form id="configForm" onsubmit="saveConfiguration(event)" class="space-y-6">
+                <!-- Audio Principal de Fondo -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">Audio de Fondo (Música Romántica)</label>
+                    <input type="text" id="cfgBgAudio" class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="URL mp3 de Cloudinary">
+                </div>
+
+                <!-- Galería Items (JSON o Inputs dinámicos simples) -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700">Elementos de Galería (Fotos / Videos Cloudinary)</label>
+                    <div id="galleryInputs" class="space-y-3">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Notas de Voz -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700">Audios de Voz Dedicados</label>
+                    <div id="audioInputs" class="space-y-3">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Texto de Carta -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">Mensaje de la Carta de Amor</label>
+                    <textarea id="cfgLetterText" rows="4" class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Escribe tu mensaje..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="resetToDefaults()" class="px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                        Restablecer Ejemplo
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-rose-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-rose-700 transition-colors">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
         </div>
-      </div>
     </div>
 
-    <!-- Galería de Fotos -->
-    <h2 class="section-title">📸 Nuestra Galería de Fotos</h2>
-    <div class="photos-grid">
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_xfxdgb.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_xfxdgb.jpg" alt="Foto 1">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_1_xk8vip.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_1_xk8vip.jpg" alt="Foto 2">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_2_kpeuj7.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_2_kpeuj7.jpg" alt="Foto 3">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.12_AM_1_spwi7v.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.12_AM_1_spwi7v.jpg" alt="Foto 4">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853962/WhatsApp_Image_2026-10-24_at_9.56.12_AM_3_d2vzau.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853962/WhatsApp_Image_2026-10-24_at_9.56.12_AM_3_d2vzau.jpg" alt="Foto 5">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792768766/zhdvxkyvrahwyiqlj0xl.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792768766/zhdvxkyvrahwyiqlj0xl.jpg" alt="Foto 6">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1776299400/poipj01tbrjuf2tuzwim.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1776299400/poipj01tbrjuf2tuzwim.jpg" alt="Foto 7">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1776299167/cbbm6kgtev8zlqqknzvq.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1776299167/cbbm6kgtev8zlqqknzvq.jpg" alt="Foto 8">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1773141318/lmdioeqolkevfrdjz4tr.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1773141318/lmdioeqolkevfrdjz4tr.jpg" alt="Foto 9">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1773035009/eynox7uq3vq0oe6uidby.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1773035009/eynox7uq3vq0oe6uidby.jpg" alt="Foto 10">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg" alt="Foto 11">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg" alt="Foto 12">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771133218/ot5auvuifqgbrvpv28ia.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771133218/ot5auvuifqgbrvpv28ia.jpg" alt="Foto 13">
-      </div>
-      <div class="photo-card" onclick="openModal('https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531222/sapdyy9qsbrjkhzxjfwj.jpg')">
-        <img src="https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531222/sapdyy9qsbrjkhzxjfwj.jpg" alt="Foto 14">
-      </div>
-    </div>
+    <!-- AUDIO ELEMENTS OCULTOS PARA CONTROL -->
+    <audio id="bgAudioLoop" loop preload="auto"></audio>
+    <audio id="voiceNoteAudio" preload="auto"></audio>
 
-    <!-- Carta de Amor Final -->
-    <div class="letter-container">
-      <h2 class="letter-title">Para ti, con todo mi amor</h2>
-      <p class="letter-body">
-        Gracias por estos 11 meses llenos de momentos mágicos, risas y aventuras. Cada foto y video aquí guardado es solo una pequeña muestra de lo feliz que me haces día a día. ¡Por muchos meses y años más juntos!
-      </p>
-      <div style="font-size: 1.5rem;">💖✨</div>
-    </div>
+    <!-- JAVASCRIPT PRINCIPAL -->
+    <script>
+        // CONFIGURACIÓN PREDETERMINADA CON TUS RECURSOS DE CLOUDINARY REALES (ABEL Y MAYDA)
+        const DEFAULT_CONFIG = {
+            bgAudio: "https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854687/WhatsApp_Ptt_2026-10-24_at_10.07.31_AM_k3vzpr.ogg",
+            gallery: [
+                {
+                    type: "video",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854688/WhatsApp_Video_2026-10-24_at_10.04.12_AM_1_ue7owf.mp4",
+                    caption: "Nuestros momentos especiales en video 🎬❤️"
+                },
+                {
+                    type: "video",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854688/WhatsApp_Video_2026-10-24_at_10.04.12_AM_xe79c3.mp4",
+                    caption: "Risas y sonrisas únicas juntos ✨"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_xfxdgb.jpg",
+                    caption: "Cada momento a tu lado es inolvidable 💖"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_1_xk8vip.jpg",
+                    caption: "Tus sonrisas ilumina mis días 😊"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.11_AM_2_kpeuj7.jpg",
+                    caption: "Mi lugar favorito en el mundo siempre es contigo 🥰"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853963/WhatsApp_Image_2026-10-24_at_9.56.12_AM_1_spwi7v.jpg",
+                    caption: "Juntos escribiendo nuestra bonita historia 📖"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792853962/WhatsApp_Image_2026-10-24_at_9.56.12_AM_3_d2vzau.jpg",
+                    caption: "11 meses de recuerdos hermosos 💕"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1792768766/zhdvxkyvrahwyiqlj0xl.jpg",
+                    caption: "Un día especial lleno de magia ✨"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1776299400/poipj01tbrjuf2tuzwim.jpg",
+                    caption: "Gracias por estar a mi lado cada día 🌹"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1776299167/cbbm6kgtev8zlqqknzvq.jpg",
+                    caption: "Un lindo recuerdo que guardo en mi corazón 💖"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1773141318/lmdioeqolkevfrdjz4tr.jpg",
+                    caption: "Esa mirada única que me enamora 😍"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1773035009/eynox7uq3vq0oe6uidby.jpg",
+                    caption: "Momentos mágicos que construimos juntos 💫"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771012672/zohlnjlunxeafhnzdinx.jpg",
+                    caption: "Cada detalle a tu lado cuenta ❤️"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771000212/lu0vh9dirievwosl19sx.jpg",
+                    caption: "Siempre de la mano enfrentando todo ✨"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1771133218/ot5auvuifqgbrvpv28ia.jpg",
+                    caption: "Amor puro y sincero 🌹"
+                },
+                {
+                    type: "image",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/image/upload/v1772531222/sapdyy9qsbrjkhzxjfwj.jpg",
+                    caption: "11 meses y toda una vida por delante 💞"
+                }
+            ],
+            audioNotes: [
+                {
+                    title: "Escúchame un momento 🎙️",
+                    subtitle: "Un mensaje especial para ti",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854687/WhatsApp_Ptt_2026-10-24_at_10.07.31_AM_k3vzpr.ogg"
+                },
+                {
+                    title: "Lo que siento por ti ❤️",
+                    subtitle: "Palabras con todo mi cariño",
+                    url: "https://res.cloudinary.com/dvm2v0zvr/video/upload/v1792854687/WhatsApp_Ptt_2026-10-24_at_10.10.10_AM_u0bwyf.ogg"
+                }
+            ],
+            letterText: "Mi amor,\n\nHoy cumplimos 11 meses hermosos recorriendo este camino juntos y no puedo evitar sonreír al recordar todo lo que hemos vivido. Cada día a tu lado me confirma que haberte conocido ha sido una de las bendiciones más bonitas de mi vida.\n\nGracias por tus abrazos sinceros, por escucharme, por reírte conmigo y por llenar mi mundo de alegría. Estos 11 meses son solo el inicio de todo lo maravilloso que nos falta por celebrar y vivir.\n\nTe amo muchísimo.",
+            signature: "Con todo mi amor, Abel ❤️"
+        };
 
-    <footer>
-      Hecho con todo el amor del mundo para celebrar nuestros 11 meses.
-    </footer>
-  </div>
+        let appConfig = JSON.parse(localStorage.getItem('romantic_app_config')) || DEFAULT_CONFIG;
+        let isMainAudioPlaying = false;
+        let currentActiveVoiceBtn = null;
 
-  <!-- Modal Visualizador de Fotos -->
-  <div class="modal" id="photoModal">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <div class="modal-content">
-      <img src="" id="modalImg" alt="Foto ampliada">
-    </div>
-  </div>
+        // INICIALIZACIÓN
+        window.onload = () => {
+            initCanvas();
+            loadAppContent();
+        };
 
-  <script>
-    // Canvas Estrellas Animadas
-    const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
+        // CARGAR CONTENIDO EN EL DOM
+        function loadAppContent() {
+            // Audio principal
+            const bgAudio = document.getElementById('bgAudioLoop');
+            bgAudio.src = appConfig.bgAudio;
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+            // Render Galería
+            const galleryGrid = document.getElementById('galleryGrid');
+            galleryGrid.innerHTML = '';
+            appConfig.gallery.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "group relative rounded-2xl overflow-hidden glass-card cursor-pointer transform hover:-translate-y-2 hover:shadow-2xl transition-all duration-300";
+                card.onclick = () => openMediaModal(item);
 
-    const stars = Array.from({ length: 80 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 1.5 + 0.5,
-      alpha: Math.random(),
-      speed: Math.random() * 0.01 + 0.005
-    }));
+                if(item.type === 'image') {
+                    card.innerHTML = `
+                        <div class="aspect-square w-full overflow-hidden relative">
+                            <img src="${item.url}" alt="Recuerdo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x600/be123c/ffffff?text=Foto+de+Amor'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                <p class="text-white text-sm font-medium leading-snug">${item.caption}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="aspect-square w-full overflow-hidden relative bg-black flex items-center justify-center">
+                            <video src="${item.url}" class="w-full h-full object-cover opacity-80" muted></video>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-rose-600/90 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </div>
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                <p class="text-white text-sm font-medium leading-snug">${item.caption}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                galleryGrid.appendChild(card);
+            });
 
-    function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      stars.forEach(s => {
-        s.alpha += s.speed;
-        if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = rgba(255, 182, 193, ${Math.abs(s.alpha)});
-        ctx.fill();
-      });
-      requestAnimationFrame(drawStars);
-    }
-    drawStars();
+            // Render Audios de Voz
+            const audioContainer = document.getElementById('audioNotesContainer');
+            audioContainer.innerHTML = '';
+            appConfig.audioNotes.forEach((note, index) => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-4 rounded-2xl flex items-center justify-between gap-4 border border-white/10 hover:border-rose-500/40 transition-all";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <button onclick="playVoiceNote('${note.url}', this)" class="voice-btn w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 flex items-center justify-center text-white shadow-md hover:scale-105 active:scale-95 transition-all">
+                            <i class="fa-solid fa-play ml-0.5"></i>
+                        </button>
+                        <div>
+                            <h4 class="font-bold text-white text-base">${note.title}</h4>
+                            <p class="text-xs text-slate-400">${note.subtitle}</p>
+                        </div>
+                    </div>
+                    <div class="text-rose-400 text-xs font-semibold px-3 py-1 rounded-full bg-rose-500/10">
+                        <i class="fa-solid fa-volume-high mr-1"></i> Audio
+                    </div>
+                `;
+                audioContainer.appendChild(card);
+            });
 
-    // Reproductor de Audio
-    const bgAudio = document.getElementById('bgAudio');
-    const bgAudioBtn = document.getElementById('bgAudioBtn');
-    const musicDisc = document.getElementById('musicDisc');
+            // Render Carta
+            document.getElementById('letterContent').innerText = appConfig.letterText;
+            document.getElementById('letterSignature').innerText = appConfig.signature || "Con todo mi amor";
+        }
 
-    function startExperience() {
-      document.getElementById('intro-overlay').classList.add('hidden');
-      bgAudio.volume = 0.5;
-      bgAudio.play().then(() => {
-        bgAudioBtn.textContent = '⏸️';
-        musicDisc.classList.add('playing');
-      }).catch(e => console.log("Audio block:", e));
-    }
+        // INICIAR EXPERIENCIA (INTRO)
+        function startExperience() {
+            const intro = document.getElementById('introScreen');
+            const player = document.getElementById('musicPlayer');
+            
+            intro.classList.add('opacity-0');
+            setTimeout(() => {
+                intro.style.display = 'none';
+                player.classList.remove('opacity-0', 'translate-y-10');
+            }, 1000);
 
-    function toggleMainAudio() {
-      if (bgAudio.paused) {
-        bgAudio.play();
-        bgAudioBtn.textContent = '⏸️';
-        musicDisc.classList.add('playing');
-      } else {
-        bgAudio.pause();
-        bgAudioBtn.textContent = '▶️';
-        musicDisc.classList.remove('playing');
-      }
-    }
+            // Iniciar Audio de Fondo
+            toggleMainAudio(true);
+        }
 
-    function pauseBgMusic() {
-      if (!bgAudio.paused) {
-        bgAudio.pause();
-        bgAudioBtn.textContent = '▶️';
-        musicDisc.classList.remove('playing');
-      }
-    }
+        // CONTROL DE MÚSICA PRINCIPAL
+        function toggleMainAudio(forcePlay = false) {
+            const bgAudio = document.getElementById('bgAudioLoop');
+            const playIcon = document.getElementById('playIcon');
+            const waveContainer = document.getElementById('waveContainer');
 
-    // Modal de Fotos
-    function openModal(src) {
-      document.getElementById('modalImg').src = src;
-      document.getElementById('photoModal').classList.add('active');
-    }
+            // Pausar audio de voz si se reproduce la música
+            pauseVoiceNote();
 
-    function closeModal() {
-      document.getElementById('photoModal').classList.remove('active');
-    }
-  </script>
+            if (forcePlay || bgAudio.paused) {
+                bgAudio.play().then(() => {
+                    isMainAudioPlaying = true;
+                    playIcon.className = "fa-solid fa-pause";
+                    waveContainer.classList.remove('hidden');
+                }).catch(e => console.log("Auto-play prevenido:", e));
+            } else {
+                bgAudio.pause();
+                isMainAudioPlaying = false;
+                playIcon.className = "fa-solid fa-play ml-0.5";
+                waveContainer.classList.add('hidden');
+            }
+        }
+
+        function changeVolume(val) {
+            document.getElementById('bgAudioLoop').volume = val;
+            document.getElementById('voiceNoteAudio').volume = val;
+        }
+
+        // CONTROL DE NOTAS DE VOZ DEDICADAS
+        function playVoiceNote(url, btn) {
+            const voiceAudio = document.getElementById('voiceNoteAudio');
+            const bgAudio = document.getElementById('bgAudioLoop');
+
+            // Si se presiona el botón activo actualmente
+            if (currentActiveVoiceBtn === btn && !voiceAudio.paused) {
+                voiceAudio.pause();
+                resetVoiceBtnState(btn);
+                return;
+            }
+
+            // Restaurar botón previo si existía
+            if (currentActiveVoiceBtn) {
+                resetVoiceBtnState(currentActiveVoiceBtn);
+            }
+
+            // Pausar música de fondo mientras habla la nota de voz
+            if (!bgAudio.paused) {
+                bgAudio.pause();
+                document.getElementById('playIcon').className = "fa-solid fa-play ml-0.5";
+                document.getElementById('waveContainer').classList.add('hidden');
+            }
+
+            voiceAudio.src = url;
+            voiceAudio.play();
+            currentActiveVoiceBtn = btn;
+
+            // Cambiar icono del botón activo
+            btn.querySelector('i').className = "fa-solid fa-pause";
+            btn.classList.add('ring-4', 'ring-rose-500/50');
+
+            voiceAudio.onended = () => {
+                resetVoiceBtnState(btn);
+                // Reanudar música de fondo si estaba activa
+                if (isMainAudioPlaying) {
+                    toggleMainAudio(true);
+                }
+            };
+        }
+
+        function pauseVoiceNote() {
+            const voiceAudio = document.getElementById('voiceNoteAudio');
+            if (!voiceAudio.paused) {
+                voiceAudio.pause();
+                if (currentActiveVoiceBtn) {
+                    resetVoiceBtnState(currentActiveVoiceBtn);
+                }
+            }
+        }
+
+        function resetVoiceBtnState(btn) {
+            btn.querySelector('i').className = "fa-solid fa-play ml-0.5";
+            btn.classList.remove('ring-4', 'ring-rose-500/50');
+            currentActiveVoiceBtn = null;
+        }
+
+        // CONTROL DE CARTA Y SOBRE
+        function toggleEnvelope() {
+            const envelope = document.getElementById('envelope');
+            envelope.classList.toggle('open');
+        }
+
+        // MODAL MULTIMEDIA (FOTOS / VIDEOS)
+        function openMediaModal(item) {
+            const modal = document.getElementById('mediaModal');
+            const modalContent = document.getElementById('modalContent');
+            const caption = document.getElementById('modalCaption');
+
+            modalContent.innerHTML = '';
+            caption.innerText = item.caption || '';
+
+            if (item.type === 'image') {
+                modalContent.innerHTML = `<img src="${item.url}" class="max-h-[75vh] w-auto object-contain rounded-xl shadow-2xl">`;
+            } else {
+                modalContent.innerHTML = `<video src="${item.url}" controls autoplay class="max-h-[75vh] w-auto rounded-xl shadow-2xl"></video>`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeMediaModal() {
+            const modal = document.getElementById('mediaModal');
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = ''; // Detener video al cerrar
+            modal.classList.add('hidden');
+        }
+
+        // MODAL DE CONFIGURACIÓN
+        function openConfigModal() {
+            document.getElementById('cfgBgAudio').value = appConfig.bgAudio;
+            document.getElementById('cfgLetterText').value = appConfig.letterText;
+
+            // Inputs para Galería
+            const gInputs = document.getElementById('galleryInputs');
+            gInputs.innerHTML = '';
+            appConfig.gallery.forEach((item, idx) => {
+                gInputs.innerHTML += `
+                    <div class="p-3 bg-slate-100 rounded-lg space-y-2 border border-slate-200">
+                        <div class="flex gap-2">
+                            <select id="cfgType_${idx}" class="text-xs p-1.5 border rounded bg-white font-semibold">
+                                <option value="image" ${item.type === 'image' ? 'selected' : ''}>Imagen</option>
+                                <option value="video" ${item.type === 'video' ? 'selected' : ''}>Video</option>
+                            </select>
+                            <input type="text" id="cfgUrl_${idx}" value="${item.url}" placeholder="URL Cloudinary" class="flex-1 text-xs p-1.5 border rounded bg-white">
+                        </div>
+                        <input type="text" id="cfgCap_${idx}" value="${item.caption}" placeholder="Descripción corta" class="w-full text-xs p-1.5 border rounded bg-white">
+                    </div>
+                `;
+            });
+
+            // Inputs para Audios
+            const aInputs = document.getElementById('audioInputs');
+            aInputs.innerHTML = '';
+            appConfig.audioNotes.forEach((note, idx) => {
+                aInputs.innerHTML += `
+                    <div class="p-3 bg-slate-100 rounded-lg space-y-2 border border-slate-200">
+                        <input type="text" id="cfgAudioTitle_${idx}" value="${note.title}" placeholder="Título del audio" class="w-full text-xs p-1.5 border rounded bg-white font-bold">
+                        <input type="text" id="cfgAudioUrl_${idx}" value="${note.url}" placeholder="URL mp3 de Cloudinary" class="w-full text-xs p-1.5 border rounded bg-white">
+                    </div>
+                `;
+            });
+
+            document.getElementById('configModal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.add('hidden');
+        }
+
+        function saveConfiguration(e) {
+            e.preventDefault();
+
+            appConfig.bgAudio = document.getElementById('cfgBgAudio').value;
+            appConfig.letterText = document.getElementById('cfgLetterText').value;
+
+            // Guardar Galería
+            appConfig.gallery.forEach((_, idx) => {
+                appConfig.gallery[idx].type = document.getElementById(`cfgType_${idx}`).value;
+                appConfig.gallery[idx].url = document.getElementById(`cfgUrl_${idx}`).value;
+                appConfig.gallery[idx].caption = document.getElementById(`cfgCap_${idx}`).value;
+            });
+
+            // Guardar Audios
+            appConfig.audioNotes.forEach((_, idx) => {
+                appConfig.audioNotes[idx].title = document.getElementById(`cfgAudioTitle_${idx}`).value;
+                appConfig.audioNotes[idx].url = document.getElementById(`cfgAudioUrl_${idx}`).value;
+            });
+
+            // Guardar en LocalStorage
+            localStorage.setItem('romantic_app_config', JSON.stringify(appConfig));
+
+            closeConfigModal();
+            loadAppContent();
+        }
+
+        function resetToDefaults() {
+            if (confirm("¿Deseas restablecer los datos de ejemplo predeterminados?")) {
+                appConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+                localStorage.removeItem('romantic_app_config');
+                closeConfigModal();
+                loadAppContent();
+            }
+        }
+
+        // CANVAS DE PARTICULAS Y CORAZONES FLOTANTES
+        function initCanvas() {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const particles = [];
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 12 + 6,
+                    speedY: Math.random() * 0.8 + 0.2,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.2,
+                    isHeart: Math.random() > 0.4
+                });
+            }
+
+            function drawHeart(x, y, size, opacity) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(244, 63, 94, ${opacity})`;
+                const topCurveHeight = size * 0.3;
+                ctx.moveTo(x, y + topCurveHeight);
+                ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + topCurveHeight);
+                ctx.bezierCurveTo(x - size / 2, y + (size + topCurveHeight) / 2, x, y + size, x, y + size);
+                ctx.bezierCurveTo(x, y + size, x + size / 2, y + (size + topCurveHeight) / 2, x + size / 2, y + topCurveHeight);
+                ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + topCurveHeight);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function animateCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.y -= p.speedY;
+                    p.x += p.speedX;
+
+                    if (p.y < -20) {
+                        p.y = canvas.height + 20;
+                        p.x = Math.random() * canvas.width;
+                    }
+
+                    if (p.isHeart) {
+                        drawHeart(p.x, p.y, p.size, p.opacity);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size / 4, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(251, 191, 36, ${p.opacity})`;
+                        ctx.fill();
+                    }
+                });
+
+                requestAnimationFrame(animateCanvas);
+            }
+
+            animateCanvas();
+        }
+    </script>
 </body>
 </html>
